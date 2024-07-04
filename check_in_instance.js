@@ -3,7 +3,7 @@
 // Execute in background script
 (function bgScript() {
     /**
-     * 
+     * A AMERLIORER
      * @param {string} fieldType Valeur à rechercher dans le type du champ
      * @returns {Object} Un objet mappant les noms des tables et les noms des champs trouvées
      * @example {
