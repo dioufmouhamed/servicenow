@@ -1,0 +1,16 @@
+Module 1:
+
+On a plusieurs canaux pour declarer un incident ou demande de Csutomer 
+
+Les comptes : on peux avoir plusieurs compte d'emails entrant  mais un seul compte de sortie est pris en compte.
+
+A partir d'un email , on peut creer , update ou reject/solution d'un case
+Les Emails inbound :  inbound emails action , est une configuration permettant d'agir sur le case d'un B2C ou B2B ,
+    suite a la reception d'un mail.
+    
+    Channel configuration  : une configuration permettant de relier un product et un compte client , 
+                            a la creation d'un case via email , le product sera mappé automtiquement.
+
+inbound emails flows: est prioritaire , cette configuration permet de definir un process business specifique avec un flow designer.
+
+
