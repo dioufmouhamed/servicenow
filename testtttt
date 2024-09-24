@@ -1,154 +1,21 @@
-[
-    {
-        "nom": "(CH) Chandler - Secondaire TI",
-        "picci": "CHA TE"
-    },
-    {
-        "nom": "(GA) Gatineau - Secondaire TI",
-        "picci": "GAT TE"
-    },
-    {
-        "nom": "(JO) Jonquière - Secondaire TI",
-        "picci": "JON TE"
-    },
-    {
-        "nom": "(LE ) Lévis - Secondaire TI",
-        "picci": "LEV TE"
-    },
-    {
-        "nom": "(LG) Longueuil - Secondaire TI",
-        "picci": "LG TE"
-    },
-    {
-        "nom": "(LL) Laval - Secondaire TI",
-        "picci": "5PL TE"
-    },
-    {
-        "nom": "(LO) Longueuil - Secondaire TI",
-        "picci": "LON 1.15 TE"
-    },
-    {
-        "nom": "(MA) Marcel-Laurin - Secondaire TI",
-        "picci": "MAL TE"
-    },
-    {
-        "nom": "(MB) René-Lévesque - Secondaire TI",
-        "picci": "M500 TE"
-    },
-    {
-        "nom": "(ME) Montréal Est - Secondaire TI",
-        "picci": "MVO 195 TE"
-    },
-    {
-        "nom": "(MN) Langelier - Secondaire TI",
-        "picci": "MLA TE"
-    },
-    {
-        "nom": "(MO) Côte-Vertu - Secondaire TI",
-        "picci": "MCV TE"
-    },
-    {
-        "nom": "(MR) René-Lévesque - Secondaire TI",
-        "picci": "M1600 TE"
-    },
-    {
-        "nom": "(MT) Desjardins - Principal TI",
-        "picci": "MCD SS1TE"
-    },
-    {
-        "nom": "(MT) Desjardins - Secondaire TI",
-        "picci": "D037TI TE"
-    },
-    {
-        "nom": "(QC) Charest - Secondaire TI",
-        "picci": "QC65 TE"
-    },
-    {
-        "nom": "(QM) Hamel - Secondaire TI",
-        "picci": "QHA1665 TE"
-    },
-    {
-        "nom": "(RI) Rimouski - Secondaire TI",
-        "picci": "RIM TE"
-    },
-    {
-        "nom": "(RO) Rouyn-Noranda - Secondaire TI",
-        "picci": "ROU TE"
-    },
-    {
-        "nom": "(SE) Sept-Îles - Secondaire TI",
-        "picci": "SEP TE"
-    },
-    {
-        "nom": "(SF) Marly- Secondaire TI",
-        "picci": "MAR TE"
-    },
-    {
-        "nom": "(SH) Sherbrooke - Secondaire TI",
-        "picci": "SH2665 TE"
-    },
-    {
-        "nom": "(SJ) St-Jean-sur-Richelieu - Secondaire TI",
-        "picci": "SJR TE"
-    },
-    {
-        "nom": "(SK) Sherbrooke - Secondaire TI",
-        "picci": "SK2130 TE"
-    },
-    {
-        "nom": "(SO) Sorel - Secondaire TI",
-        "picci": "SOR TE"
-    },
-    {
-        "nom": "(SR) St-Raymond - Secondaire TI",
-        "picci": "SRA TE"
-    },
-    {
-        "nom": "(SW) Shawinigan - Secondaire TI",
-        "picci": "SW TE"
-    },
-    {
-        "nom": "(TO) Toronto - Secondaire TI",
-        "picci": "TOR TE"
-    },
-    {
-        "nom": "(TR) Trois-Rivières - Secondaire TI",
-        "picci": "TRI TE"
-    },
-    {
-        "nom": "Montréal (Fullum 600)",
-        "picci": "FUL TE"
-    },
-    {
-        "nom": "Montréal (Pierre-Dupuy)",
-        "picci": "MMY 3.324 TE"
-    },
-    {
-        "nom": "Québec (Estimauville 1515)",
-        "picci": "QES TE"
-    },
-    {
-        "nom": "Québec (Godin 650)",
-        "picci": "QGO TE"
-    },
-    {
-        "nom": "Québec (Hamel 1625)",
-        "picci": "QHA1625 TE"
-    },
-    {
-        "nom": "Québec (Hamel 1645)",
-        "picci": "QHA1645 TE"
-    },
-    {
-        "nom": "Québec (Jean-Lesage 333)",
-        "picci": "QJL333 TE"
-    },
-    {
-        "nom": "St-Augustin (Copenhague 350)",
-        "picci": "STA TE"
-    },
-    {
-        "nom": "(SF) Marly - Principal TI",
-        "picci": "S-1-9"
-    }
-]
+function prepareData(row) {
+    myData = {};
+   //Update the below variables based on your Excel column name and need
+    myData.nom = row['nom'];
+    myData.picci = row['picci'];
+    
+    return myData;
+}
+var myobjArray = [];
+var attachmentSID = '24cfb4da473c9a506d84e9d4116d43fb'; // pass your excel attachment sys_id
+var parser = new sn_impex.GlideExcelParser();
+var attachment = new GlideSysAttachment();
+
+// use attachment sys id of an excel file
+var attachmentStream = attachment.getContentStream(attachmentSID);
+parser.parse(attachmentStream);
+while (parser.next()) {
+    var row = parser.getRow();
+    myobjArray.push(prepareData(row));
+}
+gs.info(JSON.stringify(myobjArray)); 
