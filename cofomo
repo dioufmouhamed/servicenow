@@ -1,0 +1,58 @@
+grAlmAsset.query();
+while (grAlmAsset.next()) {
+	updateCi(grAlmAsset.ci,grAlmAsset.sys_id , grAlmAsset.ci.sys_class_name);
+}
+
+function updateCi(ci,asset, classe){
+var grCCNAS = new GlideRecord(classe);
+if (grCCNAS.get(ci)) {
+	grCCNAS.asset = asset;
+	grCCNAS.update();
+}
+}
+
+//script  pour mettre a jour le champ asset d'un CI
+
+var grCCP = new GlideRecord('cmdb_ci_peripheral');
+grCCP.addEncodedQuery("typeINmonitor,docking_station");
+grCCP.orderByDesc('sys_created_on');
+
+grCCP.query();
+while (grCCP.next()) {
+    var grAlmAsset = new GlideRecord('alm_asset');
+    grAlmAsset.addEncodedQuery("ci=" + grCCP.sys_id);
+    grAlmAsset.orderByDesc('sys_updated_on');
+
+    grAlmAsset.query();
+    if (grAlmAsset.next()) {
+        grCCP.asset = grAlmAsset.sys_id;
+        grCCP.update();
+    }
+}
+
+Sprint 6
+
+Asset Appliance	  	ok       	
+Asset Bastion	   ok         	
+Asset KVM	ok
+Asset SAN	ok           	
+Asset Tablette ok		          	
+Clavier et souris Asset	 ok  	
+Telephonie Asset	ok
+
+sprint 5: localisation picci  a corriger , 
+
+asset computer peri  ok
+asset hardware  ok
+asset storage disk ok
+
+sprint 4
+hardware ok
+scanner ok
+
+imprimante : probleme , a voir 
+
+
+
+Gestion de modèle
+Proposez un nouveau modèle de changement standard. Modifiez ou mettez hors service un modèle de changement standard existant.
