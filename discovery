@@ -1,0 +1,66 @@
+198.51.236.119 
+
+
+Simulator and MID Server:
+From the top of this page, click Open My Instance to open your simulator instance.
+Navigate to Discovery > MID Servers.
+Open the MID Server record.
+Find the IP address value and write it down for later use.
+
+NOTE: All MID Servers connected to the instance display in this list. ServiceNow Discovery requires a MID Server to be installed in a customer environment in order to discovery accessible targets and to populate the CMDB.
+
+Discovery Home Page:
+ Navigate to Discovery > Home.
+
+NOTE: The Discovery Home page provides a summary of discoveries that were triggered from Configuration Item schedules during the last 30 days, including errors that might have occurred.
+
+Discovery Dashboard:
+Navigate to Discovery > Dashboard.
+
+NOTE: The Discovery Dashboard is a central place for Discovery users to monitor ongoing Discovery operations. The dashboard contains reports that query the database for newly discovered devices and applications, total discovered devices and applications and unrefreshed devices and applications.
+
+Credentials:
+Navigate to Discovery > Credentials.
+Click New.
+
+NOTE: Various types of credentials can be configured on the ServiceNow instance that allows ServiceNow Discovery to collect various types of target data. Common credential types are Windows, SSH, AWS, and SNMP.
+
+Discovery Schedule
+Navigate to Discovery > Discovery Schedules.
+
+NOTE: A Discovery schedule determines the frequency Discovery executes and what target devices and/or subnet(s) are to be discovered. Also from this page a Quick Discovery can be executed which allows an administrator to run a discovery on a single IP address without having to create a schedule. 
+
+Behaviors
+Navigate to Discovery Definition > Behaviors.
+
+NOTE: Discovery behaviors determine the probes that Shazzam launches, and from which MID Servers these probes are launched. Behaviors allow an administrator to target specific types of devices within a discovery schedule such as Windows or Unix only type devices.
+
+Process Classifiers
+Navigate to Discovery Definition > CI Classification > Processes.
+
+NOTE: A process classification allows Discovery to create a particular CI type such as an application from information gathered during the identification and exploration phases. Applications can be classified based on running processes and a relationship can be built between the application and the hardware which can be visualized on the dependency view map.
+
+Discovery Patterns
+Navigate to Pattern Designer > Discovery Patterns.
+
+NOTE: Service Mapping and Discovery use patterns in their discovery process. The base system contains a wide range of patterns that cover most industry standard network devices and applications. On top of hosts and applications supported by default, you can discover additional hosts and applications by deploying patterns available from the ServiceNow Store. In addition you can extend these patterns or create new ones.
+
+
+
+module 3
+
+track configuration file : permet d'enregistrer le changement des CI lors de la discovery, cela enregistres les configurations du CI.
+
+Module 4
+
+module 5
+
+module  6
+
+process classification
+process handler
+
+module 7
+ enforce CI verification : dans la cofiguration d'une categorie , on peut empecher la creation automatique  d'un Asset si un CI est cree ou decouvert , cette option si elle est activée  , a chaque creation de CI avec la meme categorie , deux UI action sont afficher pour Creer un asset ou pour merger avec un Asset existant.
+
+ Agent Client collector for visibility (ACC-V)

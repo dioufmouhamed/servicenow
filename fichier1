@@ -1,1 +1,79 @@
+answer = (function transformEntry(source) {
+   /* var input_text  =  source.u_rpi___statut;
+	///input_text = input_text.trim();
+    if (input_text == "Abandonné") {
+        return "End of Life";
 
+    }
+    if (input_text == "Approuvé") {
+        return "Design";
+
+    }
+
+    if (input_text == "Délaissé") {
+        return "End of life";
+
+    }
+    if (input_text == "Évaluation") {
+        return "Ideation";
+
+    }
+    if (input_text == "Exception") {
+        return "Operational";
+
+    }
+   
+    if (input_text == "Normalisé") {
+        return "Operational";
+
+    }
+    if (input_text == "Refusé") {
+        return "End of life";
+
+    }*/
+	return "Operational";
+
+})(source);
+
+
+answer = (function transformEntry(source) {
+    /*var input_text = source.u_rpi___statut;
+    
+	
+    
+    if (input_text == "Abandonné") {
+        
+        return "Retired";
+    }
+    if (input_text == "Approuvé") {
+        
+        return "Chartered";
+    }
+
+    if (input_text == "Délaissé") {
+        
+        return "Obsolete";
+    }
+    if (input_text == "Évaluation") {
+        
+        return "Under Evaluation";
+    }
+    if (input_text == "Exception") {
+       
+        return "Available";
+    }
+    //Normalisé
+    if (input_text == "Normalisé") {
+        
+        return "Available";
+    }
+    if (input_text == "Refusé") {
+       
+       return "Retired";
+    }
+*/
+	
+    return "Available";
+
+
+})(source);

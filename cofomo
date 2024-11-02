@@ -56,3 +56,19 @@ imprimante : probleme , a voir
 
 Gestion de modèle
 Proposez un nouveau modèle de changement standard. Modifiez ou mettez hors service un modèle de changement standard existant.
+
+
+
+
+
+
+1) Stop all SCCM Imports and make sure there are nothing scheduled to run. 
+
+2) Deactivate all IRE Partial Payloads [cmdb_ire_partial_payloads] by setting "Active" to "false". 
+
+3) Create/Update the System Property
+"glide.identification_engine.partial_payload_query_batch_size"
+to 8. This will reduce the number of partial payloads to query for, hence reducing memory consumption. 
+4) Run each of the SCCM Data Sources manually one by one. This is slow and tedious, but may help us identify what may potentially be causing the large number of IRE Partial Payloads and isolate the issue. 
+ 
+
