@@ -75,4 +75,6 @@ function getInfo(gr) {
             }
         }
     }
+
+    return result;
 }
