@@ -1,11 +1,12 @@
 var grUPC = new GlideRecord('u_picci_computer');
-grUPC.addEncodedQuery("");
-//grUPC.query();
+grUPC.addEncodedQuery("u_nom_ciISNOTEMPTY");
+grUPC.query();
+//grUPC.setLimit(100);
 while (grUPC.next()) {
 
     // find function and cadre utilisateur dans la table intermediaire
-    var resultat = getInfo(grUPC);
-    resultat = resultat.split("|||");
+    var result = getInfo(grUPC);
+    var resultat = result.split("|||");
 
     //update Asset 
     var grAH = new GlideRecord('alm_hardware');
@@ -59,22 +60,25 @@ function getInfo(gr) {
         "Tenant de secours": "secondary|||tenant secours"
     };
     if (inputFonction == "" && inputCadre == "") {
-        result = "|||";
+        return  "|||";
     } else if (inputFonction != "") {
         for (var key in data_function) {
             if (key.includes(inputFonction)) {
                 result = data_function[key];
+				return result;
                 break;
+				
             }
         }
     } else {
         for (var keyCad in data_cadre_utilisateur) {
             if (keyCad.includes(inputCadre)) {
                 result = data_cadre_utilisateur[keyCad];
+				return result;
                 break;
             }
         }
     }
 
-    return result;
+    //return result;
 }

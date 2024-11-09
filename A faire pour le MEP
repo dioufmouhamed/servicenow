@@ -1,0 +1,39 @@
+Pour les serveur : corriger life_stage  et  life_status(Asset)
+                 corriger le fichier  de chargement (mettre le nomci à a place de record qii n'ont pas de hostname);
+                 CI class manager pour pour les serveur AIX : cmdb_ci_lpar_instance , ajouter name comme second identification rule
+
+Pour la sprint 5 : enlever les checkin et  checkout
+
+pour le sprint 4 : 
+regarder le life cycle stage et status . pour tous les sprint (ajouter une une initialisation des deuxx varible au cas ou c'est vide)
+CI class manager pour UPs
+
+La classe Scanner : dans ci class manager modifier la partie Asset et mettre Configuration item au lieu Parent
+                Read only si ce se reproduit , on  vide le champs parent des assets.
+                avec le script 
+                
+                var grAlmAsset = new GlideRecord('alm_asset');
+                grAlmAsset.addEncodedQuery("parentISNOTEMPTY");
+                // grAlmAsset.orderByDesc('sys_updated_on');
+                // grAlmAsset.setLimit(100);
+                grAlmAsset.query();
+                while (grAlmAsset.next()) {
+                    grAlmAsset.setValue("parent","");
+                    grAlmAsset.update()
+                }
+
+
+
+//mettre a jour les ci                 
+grAlmAsset.query();
+while (grAlmAsset.next()) {
+	updateCi(grAlmAsset.ci,grAlmAsset.sys_id , grAlmAsset.ci.sys_class_name);
+}
+
+function updateCi(ci,asset, classe){
+var grCCNAS = new GlideRecord(classe);
+if (grCCNAS.get(ci)) {
+	grCCNAS.asset = asset;
+	grCCNAS.update();
+}
+}

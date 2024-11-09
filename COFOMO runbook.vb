@@ -50,3 +50,10 @@ managed by
 description
 loation picci
 environement 
+
+Formation :
+Appliance correction ok donne ok 
+bastion correction ok donne ok
+KVM  correction ok donne ok
+SAN  correction ok donne ok
+tab pc et tel int : correction ok donne ok
