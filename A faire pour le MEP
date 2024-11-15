@@ -4,11 +4,14 @@ Pour les serveur : corriger life_stage  et  life_status(Asset)
 
 Pour la sprint 5 : enlever les checkin et  checkout
 
-pour le sprint 4 : 
+pour le sprint 4 :  Enlever les scanner(optique.numeriseur) dans le fichier globale.
+                    separer le fichier scanner 
 regarder le life cycle stage et status . pour tous les sprint (ajouter une une initialisation des deuxx varible au cas ou c'est vide)
 CI class manager pour UPs
 
-La classe Scanner : dans ci class manager modifier la partie Asset et mettre Configuration item au lieu Parent
+La classe Scanner : 
+                
+                dans ci class manager modifier la partie Asset et mettre Configuration item au lieu Parent
                 Read only si ce se reproduit , on  vide le champs parent des assets.
                 avec le script 
                 
@@ -22,6 +25,40 @@ La classe Scanner : dans ci class manager modifier la partie Asset et mettre Con
                     grAlmAsset.update()
                 }
 
+Pour la classe de application lu fix : change la taille des champs pour eviter les donnèes partielles
+
+Pour les imprimantes : les multifonction : SNMP OID Classification (1.3.6.1.4.1.367.1.1) changer la classe
+
+
+Pour la classe des Computer  :  - nettoyer  le fichier (enlever ceux qui ont nomci vide )
+                               -chassis type : // Script for Classe to chassis_type mapping
+                               (function(batch, output) {
+                                  
+                                  for (var i = 0; i < batch.length; i++) {
+                                     var value = "";
+                                     var data = batch[i].input; // Value of the input column.
+                                     var input = data.trim().toLowerCase();
+                                     if(input == "pc portable" || input == "pc portable mac"){
+                                        value = "Laptop";
+                                     }
+                                     if(input == "pc de table" || input == "pc de table mac"){
+                                        value = "Desktop";
+                                     }
+                                      if(input == "pc léger"){
+                                        value = "pc leger";
+                                     }
+                                      if(input == "pc virtuel"){
+                                        value = "pc virtuel";
+                                     }
+                                     if(input == "tablette pc" || input  == "Tablette PC"){
+                                        value = "tablette pc";
+                                     }
+                                     output[i] = value;
+                                  }
+                                  
+                               })(batch, output);
+
+                               - dans Asset faire le delta des Asset et le mettre dans le data source
 
 
 //mettre a jour les ci                 
