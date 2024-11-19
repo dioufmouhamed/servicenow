@@ -69,3 +69,73 @@ function getSysidAttachment() {
     }
     return -1;
 }
+
+
+{
+	"contextual": [
+		"record",
+		"kb_view"
+	],
+	"newTabMenu": [
+		{
+			"label": {
+				"translatable": true,
+				"message": "New Interaction"
+			},
+			"routeInfo": {
+				"route": "record",
+				"fields": {
+					"table": "interaction",
+					"sysId": "-1"
+				},
+				"multiInstField": "sysId"
+			},
+			"condition": {
+				"tableDescription": {
+					"table": "interaction",
+					"canCreate": true
+				}
+			}
+		},
+		{
+			"label": {
+				"translatable": true,
+				"message": "New Incident de securite"
+			},
+			"routeInfo": {
+				"route": "record",
+				"fields": {
+					"table": "incident",
+					"sysId": "-1",
+                    "sysparm_securise": true
+				},
+				"multiInstField": "sysId"
+			},
+			"condition": {
+				"tableDescription": {
+					"table": "incident",
+					"canCreate": true
+				}
+			}
+		},
+		{
+			"label": {
+				"translatable": true,
+				"message": "New Secure Incident"
+			},
+			"routeInfo": {
+				"route": "create-change-request-page",
+				"fields": {},
+				"multiInstField": ""
+			},
+			"condition": {
+				"tableDescription": {
+					"table": "change_request",
+					"canCreate": true
+				}
+			}
+		}
+	],
+	"maxMainTabLimit": 10,
+	"maxTotalSubTabLimit": 30
+}

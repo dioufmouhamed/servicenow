@@ -1,3 +1,8 @@
+Ref:https://www.servicenow.com/community/next-experience-articles/configuring-lists-in-configurable-workspace/ta-p/2331983
+
+Pour creer une liste dans workspace : sys_ux_list_category pour la categorie
+                                     sys_ux_list pour la sous liste
+                                     ensuite on ajoute l'audience avec l'acceptance criteria pour la visibilité : sys_ux_applicability_list
 
 
-https://rqatest.service-now.com/now/builder/ui/pc/728ec88c43fa2110f20fff53e9b8f278/
+Pour ajouter un  menu item (le bouton + pour ajouter unn record )
