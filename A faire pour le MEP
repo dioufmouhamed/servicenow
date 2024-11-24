@@ -74,3 +74,6 @@ if (grCCNAS.get(ci)) {
 	grCCNAS.update();
 }
 }
+
+
+Pour le sprint 6 : ajouter un script pour hostname prioritaire a nom ci pour appliance et bastion :  output[i] = batch[i].u_nom_hote ? batch[i].u_nom_hote : batch[i].u_nom_ci;

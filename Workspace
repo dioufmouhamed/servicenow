@@ -3,6 +3,7 @@ Ref:https://www.servicenow.com/community/next-experience-articles/configuring-li
 Pour creer une liste dans workspace : sys_ux_list_category pour la categorie
                                      sys_ux_list pour la sous liste
                                      ensuite on ajoute l'audience avec l'acceptance criteria pour la visibilité : sys_ux_applicability_list
+                                     Pour la sous categorie , il faut ajouter la correspondance sur la table sys_ux_applicability_m2m_list
 
 
 Pour ajouter un  menu item (le bouton + pour ajouter unn record )
