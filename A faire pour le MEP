@@ -1,3 +1,5 @@
+Importer les modeles categorie et modele de form en prod : reverifier l'existance des doublons de modele de categorie.
+
 Pour les serveur : corriger life_stage  et  life_status(Asset)
                  corriger le fichier  de chargement (mettre le nomci à a place de record qii n'ont pas de hostname);
                  CI class manager pour pour les serveur AIX : cmdb_ci_lpar_instance , ajouter name comme second identification rule
@@ -77,3 +79,45 @@ if (grCCNAS.get(ci)) {
 
 
 Pour le sprint 6 : ajouter un script pour hostname prioritaire a nom ci pour appliance et bastion :  output[i] = batch[i].u_nom_hote ? batch[i].u_nom_hote : batch[i].u_nom_ci;
+
+
+
+
+
+
+liste des update set pour 10790
+Name
+L1-L2.CI.10790.MD 5
+L1-L2.CMDB.CSDM.10790.MD 5
+L1-L2.DIS.10790.MD 5
+L1-L2.CMDB.10790.MD 5
+L1-L2.10790.MD 4
+L1-L2-.GF.10790.MD 3
+L1-L2-PA.10790.MD 3
+L1-L2-.SLA.10790.MD 3
+L1-L2-.PAs.10790.MD 3
+L1-L2-SOW.10790.MD 3
+L1-L2-.SLABD.10790.MD 3
+L1-L2-10790.MD 3
+L1-L2-10790.MD 2
+L1-L2-TC.10790.MD
+L1-L2-Dash.10790.MD
+L1-L2-.PA.10790.MD
+L1-L2-BC.10790.MD
+L1-L2-INt.10790.MD
+L1-L2-SOW.10790.MD 
+L1-L2-CMDB.10790.MD 
+L1-L2-10790.MD 
+
+SCCM desactive : 
+0d3ccb17977c8250bf87b87e6253af94
+703ccb17977c8250bf87b87e6253af7c
+858a576677310010a94e234468106113
+c75ccf17977c8250bf87b87e6253af28
+d24c3e4673263300482f65a751ab9e4a
+db5ccf17977c8250bf87b87e6253af59
+deed768673263300482f65a751ab9e6e
+
+Discovery Discovery
+0e8d21da1b4cbd10540c8487dc4bcbde
+0215e8e51b297d10540c8487dc4bcb66
