@@ -1,5 +1,24 @@
 La taille des champs pour les application LU fix , application picci à a revoir 
-
+Important : *************vle champs name du sprint6 pour les CI.
 Toujours Verifier les entetes des fichiers.
 
 Pour la classe clavier ergonomique , un seul fichier pour les deux data source , enlever la colonne "colonne 1 " dans le fichier pour etre iso
+
+Pour le sprint 5 : verifier CI class Manager pour Scanner il faut le laisser par defaut pour SCCM ensuite
+il faut changer l'identification en INDEPENDANT  et mettre name id unique  
+apres changer le tout :
+                computer
+                device ID
+                model ID
+                Name
+                Serial Number
+
+                device 
+
+                Name
+
+Pour la classe des serveurs , les nom hote vide , remplace les par nomci dans le fichier
+
+Rouler le script pour synchronisation Asset et CI
+Rouler le script pour enlever le managed by 
+Rouler le script pour entrepot
