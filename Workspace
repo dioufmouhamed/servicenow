@@ -7,3 +7,22 @@ Pour creer une liste dans workspace : sys_ux_list_category pour la categorie
 
 
 Pour ajouter un  menu item (le bouton + pour ajouter unn record )
+
+Rediriger vers un nouveau tab en workspace 
+   dans Workspace Client Script :  function onClick(g_form) {
+var redirectURL = '/now/nav/ui/classic/params/target/alm_transfer_order.do%3Fsys_id%3D'+g_form.getUniqueValue();
+top.window.open(redirectURL,'_blank');}
+
+pour l'afficher en pop up
+ var tableName = 'alm_transfer_order';
+ var sysID = g_form.getUniqueValue(); // sys_id of the record you want to show
+
+ 
+    g_modal.showFrame({
+        url: '/now/nav/ui/classic/params/target/alm_transfer_order.do%3Fsys_id%3D'+ sysID,
+        title: g_form.getValue('number'),
+        size: 'xl',
+        height: 600
+		
+		
+    });
