@@ -1,0 +1,41 @@
+var current = new GlideRecord("sc_task");
+if (current.get("7722de123bbb165067934b0864e45a69")) {
+    var consommable_new = current.variables.consommable;
+    consommable_new = consommable_new.toString();
+    var newtab = [];
+    consommable_new = consommable_new.split(",");
+    var transfert_tab = current.variables.consommables_transfert;
+    transfert_tab = JSON.parse(transfert_tab);
+    if (consommable_new) {
+
+        //tab = JSON.parse(tab);
+
+        for (k in consommable_new) {
+            gs.print(JSON.stringify(consommable_new[k]))
+
+            var trouve = false;
+            for (j in transfert_tab) {
+                if (consommable_new[k] == transfert_tab[j]['consommables_selectionnes']) {
+                    newtab.push(transfert_tab[j]);
+                    trouve = true;
+                    break;
+
+                }
+            }
+            if (trouve === false) {
+                newtab.push({
+                    "consommables_selectionnes": consommable_new[k],
+                    "cs_stockroom": "",
+                    "cs_disponibles": "",
+                    "consommable_quantite": ""
+                });
+            }
+        }
+        current.variables.consommables_transfert = newtab;
+        current.update();
+    } else {
+        current.variables.consommables_transfert = [];
+        current.update();
+    }
+
+}
