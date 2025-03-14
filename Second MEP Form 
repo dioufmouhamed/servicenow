@@ -18,7 +18,8 @@ apres changer le tout :
                 Name
 
 Pour la classe des serveurs , les nom hote vide , remplace les par nomci dans le fichier
-
+Pour la classe des Appliance (et le sprint 6 ) , rouler normalement les ETL , apres effectuer une correction sur les données dans Servicenow en effectuant un script qui copie les hostname vers le name , ensuite effectuer une correction des Asset tag pour les CI qui n'ont pas d'asset.
 Rouler le script pour synchronisation Asset et CI
 Rouler le script pour enlever le managed by 
 Rouler le script pour entrepot
+^modelIN'+ new DemandeMassif().GetListModel(current.variables.actifs_demande)
