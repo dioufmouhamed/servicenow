@@ -1,0 +1,31 @@
+ Pour Ajouter un filtre sur les CI affectes :
+ vue classique : on modifie seulement un script inlcude    	AssociateCIToTask  et mettre  la variableprincipalClassFilter =" ton filtre "
+ 
+ pour la vue workspace : 
+    1 on ajoute un script include : RelatedListAddAffectedCIFilter 
+
+    var RelatedListAddAffectedCIFilter = Class.create();
+RelatedListAddAffectedCIFilter.prototype = {
+    initialize: function() {},
+    getFilterQuery: function(tableName, parentFieldName, parentRecordSysId, referencedFieldName) {
+        var selectedRecord = new GlideRecord(tableName);
+        selectedRecord.addQuery(parentFieldName, parentRecordSysId);
+        selectedRecord.query();
+        var result = [];
+        while (selectedRecord.next()) {
+            result.push(selectedRecord.getValue(referencedFieldName));
+        }
+
+        if (result.length)
+            return "sys_idNOT IN" + result.join(",") + '^support_groupISNOTEMPTY^install_status!=7';
+
+        return "support_groupISNOTEMPTY^install_status!=7";
+    },
+
+    handles: function(extensionPointKey) {
+        return extensionPointKey == "ADD_AFFECTED_CI_FILTER";
+    },
+    type: 'RelatedListAddAffectedCIFilter'
+};
+
+    2 on 
