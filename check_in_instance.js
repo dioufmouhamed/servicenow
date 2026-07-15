@@ -1,56 +1,56 @@
-(function(batch, output) {
-    for (var i = 0; i < batch.length; i++) {
-       var inputFonction = batch[i].u_fonction.trim(); // Value of the input columns concatenated with '|'.
-       var inputCadre = batch[i].u_cadre_utilisateur.trim();
-       var result = "";
-       // Access input column values by their names, ex: batch[i].column_name
-       
-       var data_function = {
-          "Accueil": "shared|||",
-          "Contingence": "shared|||",
-          "Formation": "shared|||",
-          "Ilôt": "shared|||",
-          "Individuel": "primary|||",
-          "Période de pointe": "shared|||peak period",
-          "Secondaire": "secondary|||",
-          "Laboratoire": "laboratoire|||",
-       };
-       var data_cadre_utilisateur = {
-        "Banctec":"|||banctec",
-        "BNA": "bna|||",
-        "dépannage":"shared|||depannage",
-        "Enquêtes":"laboratoire|||",
-        "Ergonomie":"primary|||medical",
-        "Poste Fantôme": "hors reseau rq",
-        "Fantôme": "hors reseau rq",
-        "Fantome": "hors reseau rq",
-        "ilot analyste VAO":"shared|||",
-        "Impression massive":"|||ininterruptible",
-        "Numériseur":"|||ininterruptible",
-        "Poste courtoisie":"bna|||",
-        "Poste de nuit":"|||ininterruptible",
-        "Reprodocmic":"|||ininterruptible",
-        "Résidence":"|||residence",
-        "SCCM":"laboratoire|||",
-        "WAAS":"laboratoire|||",
-        "Super Calculateur":"|||ininterruptible",
-        "Tenant de secours":"secondary|||tenant secours"    
-     };
-       if(inputFonction == "" && inputCadre == ""){
-          output[i] = "|||";
-       }
-       else if(inputFonction != ""){for (var key in data_function) {
-          if (key.includes(inputFonction)) {
-             output[i] = data_function[key];
-             break;
-          }
-       }}
-       else {
-          for (var keyCad in data_cadre_utilisateur) {
-             if (keyCad.includes(inputCadre)) {
-                output[i] = data_cadre_utilisateur[keyCad];
-                break;
-             } }
-          }
-       }
-    })(batch, output);
+/**
+* A AMERLIORER
+* @param {string} fieldType Valeur à rechercher dans le type du champ
+* @returns {Object} Un objet mappant les noms des tables et les noms des champs trouvées
+* @example {
+* nom_table1: nom_champ1_table1,
+* nom_table1: nom_champ2_table1,
+* nom_table2: nom_champ1_table2
+* ...
+* }
+*/
+function getTableFieldMapping(fieldType) {
+var dictGR = new GlideRecord('sys_dictionary');
+dictGR.addEncodedQuery('internal_type.labelLIKE' + fieldType);
+dictGR.query();
+var mapping = {};
+while (dictGR.next()) {
+mapping[dictGR.name.toString()] = dictGR.element.toString();
+}
+return mapping;
+}
+/**
+* Enrichit l'objet passé en paramètre de l'argument "results" avec les résultats de la recherche dans les tables et champs spécifiés
+* @param {string} table Nom de la table à vérifier
+* @param {string} valueToCheck Valeur à rechercher dans le champ
+* @param {Object} mapping Obje mapping des tables et champs à vérifier (retourné par getTableFieldMapping())
+* @param {Object} results Objet contenant les résultats de la recherche
+* @param {Array} excludeTables Tableaux des tables à exclure de la recherche
+*/
+function checkTable(table, valueToCheck, mapping, results, excludeTables) {
+if (excludeTables.indexOf(table) !== -1) return;
+var record = new GlideRecord(table);
+var fieldName = mapping[table];
+record.addEncodedQuery(fieldName + 'LIKE' + valueToCheck + '^active=true');
+record.query();
+while (record.next()) {
+if (!results[table]) results[table] = [];
+results[table].push(record.getUniqueValue());
+}
+}
+/**
+* Affiche les résultats de la recherche dans la fenêtre de résultat d'execution du script
+* @param {string} valueToCheck Valeur à rechercher dans les champs
+* @param {string} fieldType Valeur à rechercher dans le type du champ. Servira à constituer la liste des champs à vérifier (voir getTableFieldMapping())
+* @param {Array} excludeTables Tableaux des tables à exclure de la recherche
+*/
+function checkValueInFieldsOfType(valueToCheck, fieldType, excludeTables) {
+var mapping = getTableFieldMapping(fieldType);
+var results = {};
+var tables = Object.keys(mapping);
+tables.forEach(function (table) { checkTable(table, valueToCheck, mapping, results, excludeTables); });
+gs.print(JSON.stringify(results, null, 4));
+}
+//jjjgjg
+//test
+checkValueInFieldsOfType('has modified this field value', 'script', ['sys_script_execution_history']);

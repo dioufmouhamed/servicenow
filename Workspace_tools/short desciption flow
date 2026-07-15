@@ -1,0 +1,8 @@
+/*
+**Access Flow/Action data using the fd_data object. Script must return a value. 
+**Order number is offset by +1 in Error Handling Section.
+**Available options display upon pressing "." after fd_data
+**example: var shortDesc = fd_data.trigger.current.short_description;
+**return shortDesc;
+*/
+return fd_data.trigger.request_item.variables.y_num_projet_salle + " "+fd_data.trigger.request_item.variables.y_num_de_salle + " " +fd_data.trigger.request_item.variables.y_type_salle.getDisplayValue() + " " +fd_data.trigger.request_item.variables.emplacement.getDisplayValue();

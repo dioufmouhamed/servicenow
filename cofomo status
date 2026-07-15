@@ -1,0 +1,8 @@
+Draft: En cours de rédaction.
+Scoping: Prêt pour prise en charge.
+Awaiting approval: Non utilisé
+Work in progress: Pris en charge, en cours de traitement (DEV).
+Testing/QA: Déployé en ACC, prêt à tester par celui qui a soulevé le défaut.
+Deploy/Launch: Prêt à déployer en FORM.
+Closed complete: Déployé en FORM.
+On hold: En attente (Case ServiceNow)

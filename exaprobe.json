@@ -1,0 +1,29 @@
+{
+          "priority": "4",
+          "state": "10",
+          "description": " Field Voice and Internet Assurance",
+          "contrat": [
+                          {
+                            "skill_name": "CSM - Service - CM Complaints & Escalations",
+                            "is_mandatory": true,
+                            "skill_level": ""
+                          },
+                          {
+                            "skill_name": "Apple Computers",
+                            "is_mandatory": true,
+                             "skill_level": 5
+                          }
+                        ],
+          "conmmande": [
+                          {
+                            "skill_name": "CSM - Service - CM Complaints & Escalations",
+                            "is_mandatory": true,
+                            "skill_level": ""
+                          },
+                          {
+                            "skill_name": "Apple Computers",
+                            "is_mandatory": true,
+                             "skill_level": 5
+                          }
+                        ]
+ }

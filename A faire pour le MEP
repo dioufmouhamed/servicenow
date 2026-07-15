@@ -1,5 +1,7 @@
 Importer les modeles categorie et modele de form en prod : reverifier l'existance des doublons de modele de categorie.
 
+NB : ne pas oublié la table des sys_choice.
+
 Pour les serveur : corriger life_stage  et  life_status(Asset)
                  corriger le fichier  de chargement (mettre le nomci à a place de record qii n'ont pas de hostname);
                  CI class manager pour pour les serveur AIX : cmdb_ci_lpar_instance , ajouter name comme second identification rule

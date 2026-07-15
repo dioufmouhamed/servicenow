@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: Bell FSM WOM Integration - Create Contact
+  description: >
+    Endpoint exposing WOMintegrationUtils.createContact(data) — creates a
+    record in the x_bellc_fsm_contact table.
+    NOTE: the exact REST resource path/verb below is a placeholder since no
+    Scripted REST API resource for this function exists yet in the repo.
+    Adjust `servers` / the path to match the actual sys_ws_operation once created.
+  version: "1.0.0"
+servers:
+  - url: https://{instance}.service-now.com/api/x_bellc_fsm/wom
+    variables:
+      instance:
+        default: dev12345
+
+paths:
+  /contact:
+    post:
+      operationId: createContact
+      summary: Create a Contact
+      description: >
+        Creates a new record in x_bellc_fsm_contact. correlation_id and
+        contact_type are mandatory; all other fields are optional.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactPayload'
+            examples:
+              minimal:
+                summary: Minimal payload (mandatory fields only)
+                value:
+                  correlation_id: "COR-000123"
+                  contact_type: "primary"
+              full:
+                summary: Full payload
+                value:
+                  correlation_id: "COR-000123"
+                  contact_type: "primary"
+                  name: "John Doe"
+                  first_name: "John"
+                  last_name: "Doe"
+                  language_preference: "en"
+                  preferred_medium: "email"
+                  contact_information: "john.doe@example.com"
+      responses:
+        '200':
+          description: Contact created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateContactSuccessResponse'
+        '400':
+          description: >
+            Bad request — a mandatory field is missing (correlation_id,
+            contact_type) or a provided field is invalid/empty.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateContactErrorResponse'
+        '404':
+          description: Referenced resource not found (reserved for future reference-data validation, e.g. contact_type lookup).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateContactErrorResponse'
+        '500':
+          description: Unexpected server error (e.g. insert failure or unhandled exception).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateContactErrorResponse'
+
+components:
+  schemas:
+    ContactPayload:
+      type: object
+      required:
+        - correlation_id
+        - contact_type
+      properties:
+        correlation_id:
+          type: string
+          description: Caller-supplied correlation identifier. Mandatory, must not be empty/blank.
+          example: "COR-000123"
+        contact_type:
+          type: string
+          description: Type of contact. Mandatory, must not be empty/blank.
+          example: "primary"
+        name:
+          type: string
+          description: Optional display name.
+          example: "John Doe"
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        language_preference:
+          type: string
+          description: Optional language preference code.
+          example: "en"
+        preferred_medium:
+          type: string
+          description: Optional preferred contact medium.
+          example: "email"
+        contact_information:
+          type: string
+          description: Optional contact information (e.g. email or phone).
+          example: "john.doe@example.com"
+      additionalProperties: false
+
+    ContactRecord:
+      allOf:
+        - $ref: '#/components/schemas/ContactPayload'
+        - type: object
+          properties:
+            sys_id:
+              type: string
+              description: Unique identifier of the created x_bellc_fsm_contact record.
+              example: "8a2f1b1c47d0a110e1d5ddeeff7b12ab"
+
+    CreateContactSuccessResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        result:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: "Operation completed."
+            contact:
+              $ref: '#/components/schemas/ContactRecord'
+
+    CreateContactErrorResponse:
+      description: >
+        Shape inferred from FSMBellInternalErrorUtil usage elsewhere in
+        WOMintegrationUtils.js (definition of that util is not present in
+        this repo) — confirm/adjust against the actual util if it differs.
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        result:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: false
+            errorCode:
+              type: string
+              enum:
+                - property-missing
+                - property-invalid
+                - unexpected-server-error
+              example: "property-missing"
+            message:
+              type: string
+              example: "Correlation id is missing."
