@@ -1,4 +1,4 @@
-var WOMintegrationUtils = Class.create();
+​var WOMintegrationUtils = Class.create();
 WOMintegrationUtils.prototype = {
 
     // Need to add new syt_properties for logs
@@ -38,8 +38,6 @@ WOMintegrationUtils.prototype = {
     CORRELATION_ID_MISSING: "Correlation id is missing.",
     CORRELATION_ID_INVALID: "Correlation id is empty.",
     CORRELATION_ID_NOT_MATCH: "Correlation id not matching original.",
-    CONTACT_TYPE_MISSING: "Contact type property is missing.",
-    CONTACT_TYPE_EMPTY: "Contact type is empty.",
     STATE_MISSING: "State is missing.",
     STATE_NOT_FOUND: "State not found.",
     INTERNAL_ERROR: gs.getMessage("Internal Error."),
@@ -117,6 +115,11 @@ WOMintegrationUtils.prototype = {
     },
     MH_PICK_UP_INVALID: gs.getMessage("Mh Pick Up invalid."),
     AMALGAMATED_IDS_INVALID: gs.getMessage("Amalgamated ids invalid."),
+    RELATED_CONTACTS_EMPTY: gs.getMessage("Empty related_contacts"),
+    RELATED_CONTACTS_NOT_FOUND_CREATE: gs.getMessage("FSM contact does not found"),
+    RELATED_CONTACTS_NOT_FOUND_UPDATE: gs.getMessage("FSM contact not found"),
+    RELATED_CONTACTS_TABLE: "x_bellc_fsm_related_contacts",
+    FSM_CONTACT_TABLE: "x_bellc_fsm_contact",
 
     initialize: function() {
 
@@ -153,6 +156,25 @@ WOMintegrationUtils.prototype = {
                     this.REF_DATA_EXTERNAL_ID_NOT_VALID, {},
                     bellErrUtil.buildCausedBy(this.REF_DATA_EXTERNAL_ID_NOT_VALID)
                 );
+
+            if (data.hasOwnProperty("related_contacts")) {
+                if (gs.nil(data.related_contacts)) {
+                    return bellErrUtil.generateBellInternalErrorResponse(
+                        400,
+                        "property-invalid",
+                        this.RELATED_CONTACTS_EMPTY, {},
+                        bellErrUtil.buildCausedBy(this.RELATED_CONTACTS_EMPTY)
+                    );
+                }
+                if (!this.validateRelatedContacts(data.related_contacts)) {
+                    return bellErrUtil.generateBellInternalErrorResponse(
+                        404,
+                        "property-invalid",
+                        this.RELATED_CONTACTS_NOT_FOUND_CREATE, {},
+                        bellErrUtil.buildCausedBy(this.RELATED_CONTACTS_NOT_FOUND_CREATE)
+                    );
+                }
+            }
 
 
             if (!data.hasOwnProperty("needs_appointment")) {
@@ -590,6 +612,7 @@ WOMintegrationUtils.prototype = {
                 );
             }
 
+
             // All checks passed — continue with logic
             var grWmOrderTask = new GlideRecord('wm_task');
             grWmOrderTask.initialize();
@@ -611,6 +634,10 @@ WOMintegrationUtils.prototype = {
             grWmOrderTask.u_external_appointment_id = data.u_external_appointment_id ? data.u_external_appointment_id : null;
             grWmOrderTask.u_external_appointment_start_time = data.u_external_appointment_start_time ? data.u_external_appointment_start_time : null;
             grWmOrderTask.u_external_appointment_end_time = data.u_external_appointment_end_time ? data.u_external_appointment_end_time : null;
+            /*grWmOrderTask.u_is_eta_required = data.u_is_eta_required;
+            grWmOrderTask.u_estimated_time_of_arrival = data.u_estimated_time_of_arrival;*/
+
+
 
             //NOVA 1591
             if (!gs.nil(data.u_code_reason))
@@ -638,6 +665,11 @@ WOMintegrationUtils.prototype = {
                     grWmOrderTask.u_jeopardy_state = this.getReferenceData("x_bellc_fsm_consumed_dictionary", "active=true^target_field=u_jeopardy_state^codeIN" + data.u_jeopardy_state, data.u_jeopardy_state).toString();
                 }
             }
+            if (!gs.nil(data.u_is_charge_cost)) {
+                grWmOrderTask.u_is_charge_cost = data.u_is_charge_cost;
+            }
+
+
             if (data.hasOwnProperty("u_rule_violations") && data.u_rule_violations !== "") {
                 grWmOrderTask.u_rule_violations = this.getReferenceData(
                     "x_bellc_fsm_consumed_dictionary",
@@ -703,10 +735,18 @@ WOMintegrationUtils.prototype = {
             if (!gs.nil(data.u_has_helper_task)) {
                 grWmOrderTask.u_has_helper_task = data.u_has_helper_task;
             }
-			// if (!gs.nil(data.work_start )) {
+            // market type
+            if (!gs.nil(data.u_market_type) && this.getReferenceData("x_bellc_fsm_consumed_dictionary", "active=true^target_field=u_market_type^code=" + data.u_market_type) != -1)
+                grWmOrderTask.u_market_type = data.u_market_type;
+            // reset data
+            if (data.hasOwnProperty("u_market_type") && gs.nil(data.u_market_type)) grWmOrderTask.u_market_type = "";
+
+
+
+            // if (!gs.nil(data.work_start )) {
             //     grWmOrderTask.work_start  = data.work_start ;
             // }
-			// if (!gs.nil(data.work_end )) {
+            // if (!gs.nil(data.work_end )) {
             //     grWmOrderTask.work_end  = data.work_end ;
             // }
 
@@ -789,13 +829,17 @@ WOMintegrationUtils.prototype = {
                 }
             }
 
+            if (resultWot && data.hasOwnProperty("related_contacts") && !gs.nil(data.related_contacts)) {
+                this.insertRelatedContacts(data.related_contacts, resultWot);
+            }
+
 
             if (data.skills)
                 this.createTaskSkills(data.skills, resultWot);
 
 
             if (data.state == "4") {
-                var cancelWot = new global.WOMUtils2().incompleteWOT(resultWot ,data);
+                var cancelWot = new global.WOMUtils2().incompleteWOT(resultWot, data);
                 if (cancelWot == true)
                     return this.generateResponseWithCode_CreateWOT(200, true, this.MESSAGE_SUCCESS, this.getJsonData(resultWot, 'wm_task'));
                 else {
@@ -968,109 +1012,6 @@ WOMintegrationUtils.prototype = {
         result_global.appointment_booking = result;
         return this.generateResponse(result.success, result.reason, result_global);
     },
-
-    createContact: function(data) {
-        var bellErrUtil = new FSMBellInternalErrorUtil();
-
-        try {
-
-            if (gs.nil(data) || typeof data !== "object" || Object.keys(data).length === 0) {
-                return bellErrUtil.generateBellInternalErrorResponse(
-                    400,
-                    "property-missing",
-                    this.DATA_MISSING, {},
-                    bellErrUtil.buildCausedBy(this.DATA_MISSING)
-                );
-            }
-
-            // correlation_id - mandatory
-            if (!data.hasOwnProperty("correlation_id")) {
-                return bellErrUtil.generateBellInternalErrorResponse(
-                    400,
-                    "property-missing",
-                    this.CORRELATION_ID_MISSING, {},
-                    bellErrUtil.buildCausedBy(this.CORRELATION_ID_MISSING)
-                );
-            }
-
-            if (gs.nil(data.correlation_id) || gs.nil(("" + data.correlation_id).trim())) {
-                return bellErrUtil.generateBellInternalErrorResponse(
-                    400,
-                    "property-invalid",
-                    this.CORRELATION_ID_INVALID, {},
-                    bellErrUtil.buildCausedBy(this.CORRELATION_ID_INVALID)
-                );
-            }
-
-            // contact_type - mandatory
-            if (!data.hasOwnProperty("contact_type")) {
-                return bellErrUtil.generateBellInternalErrorResponse(
-                    400,
-                    "property-missing",
-                    this.CONTACT_TYPE_MISSING, {},
-                    bellErrUtil.buildCausedBy(this.CONTACT_TYPE_MISSING)
-                );
-            }
-
-            if (gs.nil(data.contact_type) || gs.nil(("" + data.contact_type).trim())) {
-                return bellErrUtil.generateBellInternalErrorResponse(
-                    400,
-                    "property-invalid",
-                    this.CONTACT_TYPE_EMPTY, {},
-                    bellErrUtil.buildCausedBy(this.CONTACT_TYPE_EMPTY)
-                );
-            }
-
-            // All mandatory checks passed - build & insert the record
-            var grContact = new GlideRecord('x_bellc_fsm_contact');
-            grContact.initialize();
-
-            // Mandatory fields
-            grContact.correlation_id = data.correlation_id;
-            grContact.contact_type = data.contact_type;
-
-            // Optional fields
-            if (!gs.nil(data.name)) {
-                grContact.name = data.name;
-            }
-            if (!gs.nil(data.first_name)) {
-                grContact.first_name = data.first_name;
-            }
-            if (!gs.nil(data.last_name)) {
-                grContact.last_name = data.last_name;
-            }
-            if (!gs.nil(data.language_preference)) {
-                grContact.language_preference = data.language_preference;
-            }
-            if (!gs.nil(data.preferred_medium)) {
-                grContact.preferred_medium = data.preferred_medium;
-            }
-            if (!gs.nil(data.contact_information)) {
-                grContact.contact_information = data.contact_information;
-            }
-
-            var resultContact = grContact.insert();
-            if (gs.nil(resultContact)) {
-                return bellErrUtil.generateBellInternalErrorResponse(
-                    500,
-                    "unexpected-server-error",
-                    this.INTERNAL_ERROR, {},
-                    bellErrUtil.buildCausedBy(this.INTERNAL_ERROR)
-                );
-            }
-
-            return this.generateResponseWithCode_CreateContact(200, true, this.MESSAGE_SUCCESS, this.getJsonData(resultContact, 'x_bellc_fsm_contact'));
-
-        } catch (e) {
-            return bellErrUtil.generateBellInternalErrorResponse(
-                500,
-                "unexpected-server-error",
-                this.INTERNAL_ERROR + " :" + JSON.stringify(e.message), {},
-                bellErrUtil.buildCausedBy(this.INTERNAL_ERROR + " :" + JSON.stringify(e.message))
-            );
-        }
-    },
-
     cancelWOT: function(data) {
         var bellErrUtil = new FSMBellInternalErrorUtil();
         var wot = new GlideRecord('wm_task');
@@ -1221,6 +1162,18 @@ WOMintegrationUtils.prototype = {
                 bellErrUtil.buildCausedBy(this.REF_DATA_EXTERNAL_ID_NOT_VALID)
             );
 
+        // related_contacts validation (optional field; null means "remove all", validate only when non-null)
+        if (data.hasOwnProperty("related_contacts") && !gs.nil(data.related_contacts)) {
+            if (!this.validateRelatedContacts(data.related_contacts)) {
+                return bellErrUtil.generateBellInternalErrorResponse(
+                    404,
+                    "property-invalid",
+                    this.RELATED_CONTACTS_NOT_FOUND_UPDATE, {},
+                    bellErrUtil.buildCausedBy(this.RELATED_CONTACTS_NOT_FOUND_UPDATE)
+                );
+            }
+        }
+
         // priority validation (optional field; validate only if present)
         if (Object.prototype.hasOwnProperty.call(data, "priority")) {
 
@@ -1345,7 +1298,8 @@ WOMintegrationUtils.prototype = {
                 bellErrUtil.buildCausedBy(this.INSTALLATION_TYPE_NOT_FOUND)
             );
 
-        if (!gs.nil(data.u_jeopardy_state) && this.getReferenceData("x_bellc_fsm_consumed_dictionary", "active=true^target_field=u_jeopardy_state^code=" + data.u_jeopardy_state) == -1)
+
+        if (!gs.nil(data.u_jeopardy_state) && data.u_jeopardy_state.length !== 0 && this.getReferenceData("x_bellc_fsm_consumed_dictionary", "active=true^target_field=u_jeopardy_state^code=" + data.u_jeopardy_state) == -1)
             return bellErrUtil.generateBellInternalErrorResponse(
                 404,
                 "property-invalid",
@@ -1477,6 +1431,7 @@ WOMintegrationUtils.prototype = {
             //gs.info("global.WOMUtils2 debugWOM" + new global.WOMUtils2().validate_group_assign_territory(wot));
 
             var skills;
+
             if (data.hasOwnProperty("skills")) {
                 if (Array.isArray(data.skills) && data.skills.length === 0) {
                     // Empty array = reset skills (will be handled later in update)
@@ -1496,6 +1451,12 @@ WOMintegrationUtils.prototype = {
                     }
                 }
             }
+
+            //check jeopardy_state
+            if (data.hasOwnProperty("u_jeopardy_state") && data.u_jeopardy_state.length === 0) {
+                wot.u_jeopardy_state = "";
+            }
+
 
             // check correlation id 
 
@@ -1779,12 +1740,9 @@ WOMintegrationUtils.prototype = {
             if (data.hasOwnProperty("u_is_cancelled_from_source")) {
                 wot.u_is_cancelled_from_source = data.u_is_cancelled_from_source;
             }
-            if (data.hasOwnProperty("u_jeopardy_state")) {
-                if (data.u_jeopardy_state === "") {
-                    wot.u_jeopardy_state = ""; // Reset
-                } else {
-                    wot.u_jeopardy_state = this.getReferenceData("x_bellc_fsm_consumed_dictionary", "active=true^target_field=u_jeopardy_state^code=" + data.u_jeopardy_state).toString();
-                }
+            if (data.hasOwnProperty("u_jeopardy_state") && data.u_jeopardy_state.length !== 0) {
+                wot.u_jeopardy_state = this.getReferenceData("x_bellc_fsm_consumed_dictionary", "active=true^target_field=u_jeopardy_state^code=" + data.u_jeopardy_state).toString();
+
             }
             if (data.hasOwnProperty("u_rule_violations")) {
                 if (data.u_rule_violations === "") {
@@ -1854,6 +1812,13 @@ WOMintegrationUtils.prototype = {
             if (data.hasOwnProperty("u_has_helper_task")) {
                 wot.u_has_helper_task = data.u_has_helper_task;
             }
+
+            // market type
+            if (!gs.nil(data.u_market_type) && this.getReferenceData("x_bellc_fsm_consumed_dictionary", "active=true^target_field=u_market_type^code=" + data.u_market_type) != -1)
+                wot.u_market_type = data.u_market_type;
+            // reset data
+            if (data.hasOwnProperty("u_market_type") && gs.nil(data.u_market_type)) wot.u_market_type = "";
+
             if (data.hasOwnProperty("u_mh_pick_up")) {
                 if (data.u_mh_pick_up !== "true" && data.u_mh_pick_up !== "false" && data.u_mh_pick_up !== "") {
                     return bellErrUtil.generateBellInternalErrorResponse(
@@ -2031,14 +1996,20 @@ WOMintegrationUtils.prototype = {
                     }
 
                 }
+                if (data.hasOwnProperty("related_contacts")) {
+                    this.deleteRelatedContacts(wot.sys_id);
+                    if (!gs.nil(data.related_contacts)) {
+                        this.insertRelatedContacts(data.related_contacts, wot.sys_id);
+                    }
+                }
                 if (data.task_tech_preference) {
                     return this.updateTechPreference(data.task_tech_preference, wot.sys_id);
                 }
-				// add work note 
+                // add work note 
 
-				if(data.worknotes){
-					new global.WOMUtils2().valid_worknote(data.worknotes ,result_wot);
-				}
+                if (data.worknotes) {
+                    new global.WOMUtils2().valid_worknote(data.worknotes, result_wot);
+                }
                 return this.generateResponseWithCode(200, true, this.WOT_UPDATE_SUCCESS, response);
             } else {
                 return bellErrUtil.generateBellInternalErrorResponse(
@@ -2194,6 +2165,41 @@ WOMintegrationUtils.prototype = {
 
     },
 
+    verifyFsmContact: function(fsmContactId) {
+        var grContact = new GlideRecord(this.FSM_CONTACT_TABLE);
+        if (grContact.get(fsmContactId)) {
+            return true;
+        } else return false;
+    },
+
+    validateRelatedContacts: function(relatedContacts) {
+        if (!Array.isArray(relatedContacts)) return false;
+        for (var i = 0; i < relatedContacts.length; i++) {
+            var contact = relatedContacts[i];
+            if (gs.nil(contact) || gs.nil(contact.fsm_contact_id) || !this.verifyFsmContact(contact.fsm_contact_id))
+                return false;
+        }
+        return true;
+    },
+
+    insertRelatedContacts: function(relatedContacts, wotId) {
+        if (!Array.isArray(relatedContacts)) return;
+        for (var i = 0; i < relatedContacts.length; i++) {
+            this.insertRecord({
+                wot_id: wotId,
+                fsm_contact_id: relatedContacts[i].fsm_contact_id,
+                role_name: relatedContacts[i].role_name
+            }, this.RELATED_CONTACTS_TABLE);
+        }
+    },
+
+    deleteRelatedContacts: function(wotId) {
+        var grRelatedContacts = new GlideRecord(this.RELATED_CONTACTS_TABLE);
+        grRelatedContacts.addQuery("wot_id", wotId);
+        grRelatedContacts.query();
+        grRelatedContacts.deleteMultiple();
+    },
+
     generateResponse: function(success, message, data) {
         var result = {};
         result.success = success;
@@ -2236,23 +2242,6 @@ WOMintegrationUtils.prototype = {
         response.result = result;
         return response;
     },
-    generateResponseWithCode_CreateContact: function(code, success, message, data, error_code) {
-        var response = {};
-        var result = {};
-        response.code = code;
-        result.success = success;
-        if (success == true) {
-            result.message = message;
-            result.contact = data ? data : {};
-        } else {
-            result.errorCode = error_code ? error_code : "Error code not define";
-            result.message = message;
-
-        }
-
-        response.result = result;
-        return response;
-    },
     getJsonData: function(sys_idRecord, tableRecord) {
         var grRecord = new GlideRecord(tableRecord);
         var fields = {};
@@ -2263,9 +2252,24 @@ WOMintegrationUtils.prototype = {
                 else fields[field] = grRecord.getValue(field);
 
             }
+            if (tableRecord == 'wm_task') {
+                fields.related_contacts = this.getRelatedContactsSysIds(sys_idRecord);
+            }
 
         }
         return fields;
+    },
+    getRelatedContactsSysIds: function(wotId) {
+        var relatedContacts = [];
+        var grRelatedContacts = new GlideRecord('x_bellc_fsm_task_m2m_relatedcontact');
+        grRelatedContacts.addQuery('work_task_reference', wotId);
+        grRelatedContacts.query();
+        while (grRelatedContacts.next()) {
+            relatedContacts.push({
+                sys_id: grRelatedContacts.getValue('sys_id')
+            });
+        }
+        return relatedContacts;
     },
     findSkill: function(name) {
         var grCmnSkill = new GlideRecord('cmn_skill');

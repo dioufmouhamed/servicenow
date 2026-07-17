@@ -1,10 +1,10 @@
-{
-    "correlation_id": "PE20260507033345001",
-    "contact_type": "primary",
-    "name": "Jean-Pierre Tremblay",
-    "first_name": "Jean-Pierre",
-    "last_name": "Tremblay",
-    "language_preference": "fq",
-    "preferred_medium": "sms",
-    "contact_information": "418-555-0101"
-}
+"related_contacts": [
+    {
+        "fsm_contact_id": "f7a3b2c1d4e5689012345678abcdef90",
+        "role_name": "site_contact"
+    },
+    {
+        "fsm_contact_id": "a1b2c3d4e5f6789012345678abcdef01",
+        "role_name": "requester"
+    }
+]
