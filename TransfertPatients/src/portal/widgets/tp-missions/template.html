@@ -1,0 +1,73 @@
+<div class="tp-mis">
+  <div class="tp-card tp-empty" ng-if="!data.ambulancier">Cette page est réservée aux ambulanciers.</div>
+
+  <!-- Liste des missions -->
+  <section ng-if="data.ambulancier && !c.sel" aria-labelledby="tp-mis-titre">
+    <div class="tp-section-head"><h1 id="tp-mis-titre" class="tp-h2">Mes missions</h1><span class="tp-live">Temps réel</span></div>
+    <div class="tp-card tp-empty" ng-if="!data.m.missions.length">Aucune mission pour le moment. Les nouvelles missions apparaissent ici automatiquement.</div>
+    <button type="button" class="tp-mis-carte" ng-repeat="x in data.m.missions" ng-click="c.ouvrir(x)"
+            ng-class="{'a-accepter': x.action.code == 'accepter', 'terminee': x.terminee}">
+      <span class="tp-mis-l1"><strong>{{x.numero}}</strong><span class="tp-chip tp-u{{x.urgence}}">{{x.urgenceLabel}}</span></span>
+      <span class="tp-mis-l2">{{x.origine}} → {{x.destination}}</span>
+      <span class="tp-mis-l1">
+        <span class="tp-chip" ng-class="x.terminee ? 'tp-ok' : (x.action.code == 'accepter' ? 'tp-u2' : 'tp-etat')">{{x.terminee ? 'Terminée' : (x.action.code == 'accepter' ? 'À accepter' : c.etapeEnCours(x))}}</span>
+        <span class="tp-mt-chip" ng-if="x.v && x.v.texte" ng-class="x.v.classe">{{x.v.depasse ? 'Retard' : 'Arrivée'}} {{x.v.texte}}</span>
+      </span>
+    </button>
+    <p class="tp-muted tp-mis-bilan" ng-if="data.m.terminees">Terminées aujourd'hui : {{data.m.terminees}} · dans les délais : {{data.m.dansLesDelais}}</p>
+  </section>
+
+  <!-- Détail d'une mission -->
+  <section ng-if="data.ambulancier && c.sel" aria-labelledby="tp-mis-num">
+    <div class="tp-mis-tete">
+      <button type="button" class="tp-btn tp-btn-link" ng-click="c.fermer()" aria-label="Retour à mes missions">‹ Missions</button>
+      <h1 id="tp-mis-num" class="tp-h2">{{c.sel.numero}} <span class="tp-chip tp-u{{c.sel.urgence}}">{{c.sel.urgenceLabel}}</span></h1>
+      <span class="tp-mt-chip" ng-if="c.sel.v && c.sel.v.texte" ng-class="c.sel.v.classe">{{c.sel.v.depasse ? 'Retard' : 'Arrivée'}} {{c.sel.v.texte}}</span>
+    </div>
+
+    <div class="tp-card tp-mis-bloc tp-mis-map-bloc" ng-if="c.sel.trajet">
+      <div class="tp-mis-map" id="{{c.idCarte}}" role="img" aria-label="Trajet de {{c.sel.origine}} à {{c.sel.destination}}"></div>
+      <div class="tp-mis-l1 tp-mis-pad"><span class="tp-muted">{{c.sel.trajet.km ? c.sel.trajet.km + ' km · ≈ ' + c.sel.trajet.minutes + ' min' : 'Itinéraire indisponible'}}</span>
+        <a class="tp-btn tp-btn-ghost tp-mis-itin" href="{{c.sel.trajet.osm}}" target="_blank" rel="noopener">Itinéraire</a></div>
+    </div>
+
+    <div class="tp-card tp-mis-bloc">
+      <span class="tp-label">Patient</span>
+      <strong>{{c.sel.patient}} · {{c.sel.mobilite | lowercase}}</strong>
+      <span class="tp-muted">{{c.sel.specialite}} · {{c.sel.niveau}}<span ng-if="c.sel.equipementsTexte"> · {{c.sel.equipementsTexte}}</span></span>
+      <span class="tp-muted" ng-if="c.sel.vehicule">Véhicule : {{c.sel.vehicule}}</span>
+    </div>
+
+    <ol class="tp-card tp-mis-bloc tp-mis-etapes" aria-label="Étapes" ng-if="c.sel.taches.length == 1">
+      <li ng-repeat="j in c.sel.taches[0].jalons" ng-class="{fait: j.heure}">
+        <span class="tp-dot" ng-class="{fait: j.heure}"></span>
+        <span class="tp-mis-en"><strong>{{j.nom}}</strong></span>
+        <span class="tp-muted tp-mis-eh">{{j.heure ? '✓ ' + j.heure : ''}}</span>
+      </li>
+    </ol>
+    <ol class="tp-card tp-mis-bloc tp-mis-etapes" aria-label="Étapes" ng-if="c.sel.taches.length != 1">
+      <li ng-repeat="t in c.sel.taches" ng-class="{fait: ['3','4','7'].indexOf(t.etat) > -1, cour: t.etat == '18'}">
+        <span class="tp-dot" ng-class="{fait: ['3','4','7'].indexOf(t.etat) > -1, courant: t.etat == '18'}"></span>
+        <span class="tp-mis-en"><strong>{{t.nom}}</strong><span class="tp-muted">{{t.lieu}}</span></span>
+        <span class="tp-muted tp-mis-eh">{{t.fin ? '✓ ' + t.debut + ' – ' + t.fin : (t.debut ? 'depuis ' + t.debut : t.prevu + ' · ' + t.dureeMin + ' min')}}</span>
+      </li>
+    </ol>
+
+    <div class="tp-mis-action" ng-if="c.sel.action && !c.sel.action.inactif">
+      <label class="tp-field" ng-if="c.sel.action.note || c.mode">
+        {{c.mode == 'refuser' ? 'Motif du refus' : (c.mode == 'incomplete' ? 'Motif de la clôture incomplète' : 'Note de remise (obligatoire)')}}
+        <textarea ng-model="c.note" rows="3" maxlength="1000"></textarea>
+      </label>
+      <button type="button" class="tp-btn tp-btn-primary tp-mis-gros" ng-if="!c.mode" ng-disabled="c.envoi"
+              ng-class="{'vert': c.sel.action.code == 'terminer'}" ng-click="c.agir(c.sel.action.code)">{{c.sel.action.libelle}}</button>
+      <button type="button" class="tp-btn tp-btn-danger tp-mis-gros" ng-if="c.mode" ng-disabled="c.envoi" ng-click="c.agir(c.mode)">{{c.mode == 'refuser' ? 'Confirmer le refus' : 'Confirmer la clôture incomplète'}}</button>
+      <button type="button" class="tp-btn tp-btn-ghost tp-btn-block" ng-if="c.sel.action.secondaire && !c.mode" ng-click="c.mode = c.sel.action.secondaire">{{c.sel.action.secondaire == 'refuser' ? 'Refuser' : 'Clôturer incomplète…'}}</button>
+      <button type="button" class="tp-btn tp-btn-link tp-btn-block" ng-if="c.mode" ng-click="c.mode = ''">Annuler</button>
+    </div>
+    <div class="tp-card tp-mis-bloc tp-muted" ng-if="c.sel.action.inactif">{{c.sel.action.libelle}}</div>
+    <div class="tp-card tp-mis-bloc" ng-if="c.sel.terminee">
+      <strong>Mission terminée</strong>
+      <span class="tp-mt-bilan"><span class="tp-chip" ng-repeat="b in c.sel.mt.bilan" ng-class="b.ok ? 'tp-ok' : 'tp-ko'">{{b.label}} {{b.texte}}<span ng-if="b.cible"> / {{b.cible}}</span> {{b.ok ? '✓' : '✗'}}</span></span>
+    </div>
+  </section>
+</div>

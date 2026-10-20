@@ -1,0 +1,44 @@
+<div class="tp-reg">
+  <div class="tp-card tp-empty" ng-if="data.r.interdit">Cette page est réservée à la régulation.</div>
+  <div ng-if="!data.r.interdit">
+    <div class="tp-reg-barre">
+      <h1 class="tp-reg-titre">Tableau de régulation</h1>
+      <span class="tp-live">Temps réel</span>
+      <a class="tp-btn tp-btn-primary" ng-if="data.r.producteur" href="?id=sc_cat_item&sys_id={{data.r.producteur}}">+ Nouvelle demande</a>
+    </div>
+    <div class="tp-reg-corps">
+      <div class="tp-reg-main">
+        <div class="tp-reg-kpis">
+          <div class="tp-reg-kpi" ng-class="{'alerte': data.r.kpi.sansReponse}"><span>Publiées sans arbitrage</span><strong class="rouge">{{data.r.kpi.sansReponse}}</strong><em ng-if="c.prochaine">la plus proche expire dans <span class="tp-cd-live" ng-class="c.prochaine.classe">{{c.prochaine.texte}}</span></em><em ng-if="!c.prochaine">—</em></div>
+          <div class="tp-reg-kpi" ng-class="{'attention': data.r.kpi.arbitrer}"><span>Acceptations à arbitrer</span><strong class="ambre">{{data.r.kpi.arbitrer}}</strong><em>retenir une destination</em></div>
+          <div class="tp-reg-kpi"><span>Transports planifiés</span><strong>{{data.r.kpi.transport}}</strong><em>qualification et dispatch FSM</em></div>
+          <div class="tp-reg-kpi"><span>En transit</span><strong>{{data.r.kpi.transit}}</strong><em>patients en route</em></div>
+          <div class="tp-reg-kpi"><span>Lits libres</span><strong class="vert">{{data.r.litsDispo}}</strong><em>sur {{data.r.litsTotal}} dans la région</em></div>
+        </div>
+        <div class="tp-reg-board-box">
+          <div class="tp-reg-board">
+            <section class="tp-reg-col" ng-repeat="col in data.r.colonnes" aria-label="{{col.titre}}">
+              <h2><span class="pt" ng-style="{'background': col.couleur}"></span>{{col.titre}}<span class="nb">{{col.nombre}}</span></h2>
+              <a class="tp-reg-carte" ng-repeat="x in col.cartes" href="?id=tp_demande&sys_id={{x.id}}">
+                <span class="haut"><span class="tp-chip tp-u{{x.urgence}}">{{x.urgenceLabel}}</span><span class="num">{{x.numero}}</span><span class="cd tp-mt-chip" ng-if="x.v && x.v.texte" ng-class="x.v.classe">{{x.mt.phase == 'reponse' ? 'Réponse' : (x.mt.phase == 'decision' ? 'Décision' : (x.v.depasse ? 'Retard' : 'Arrivée'))}} {{x.v.texte}}</span></span>
+                <span class="t">{{x.specialite}} · {{x.niveau}}</span>
+                <span class="l">{{x.origine}}<span ng-if="x.destination"> → {{x.destination}}</span></span>
+                <span class="pied">{{x.pied}}</span>
+              </a>
+              <div class="vide" ng-if="!col.cartes.length">Aucune demande</div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <aside class="tp-reg-cap" aria-labelledby="tp-reg-cap-t">
+        <h2 id="tp-reg-cap-t">Lits libres dans la région</h2>
+        <div class="tp-muted">{{data.r.litsDispo}} lits libres · {{data.r.nbEtabs}} établissements · par spécialité</div>
+        <div class="tp-reg-cap-l" ng-repeat="s in data.r.capacite">
+          <span class="n">{{s.nom}}</span><strong ng-class="{'bas': s.bas}">{{s.lits}}</strong>
+          <span class="b"><span ng-style="{'width': s.pct + '%'}" ng-class="{'bas': s.bas}"></span></span>
+        </div>
+        <div class="tp-muted tp-reg-legende">Orange : 2 lits libres ou moins dans toute la région.</div>
+      </aside>
+    </div>
+  </div>
+</div>

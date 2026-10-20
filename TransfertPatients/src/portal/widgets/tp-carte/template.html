@@ -1,0 +1,37 @@
+<section class="tp-card tp-carte" aria-labelledby="tp-carte-titre">
+  <div class="tp-section-head">
+    <div>
+      <h1 id="tp-carte-titre" class="tp-h2">Carte des hôpitaux</h1>
+      <span class="tp-live">Lits libres en temps réel · {{data.c.hopitaux.length}} hôpitaux</span>
+    </div>
+    <div class="tp-carte-bascules" ng-if="data.c.detaille">
+      <label><input type="checkbox" ng-model="c.voir.ambulances" ng-change="c.dessiner()"> Ambulances</label>
+      <label><input type="checkbox" ng-model="c.voir.transferts" ng-change="c.dessiner()"> Transferts en cours ({{data.c.transferts.length}})</label>
+    </div>
+  </div>
+  <div class="tp-carte-filtres" role="group" aria-label="Spécialité affichée">
+    <button type="button" class="tp-carte-pill" ng-class="{on: !c.specialite}" aria-pressed="{{!c.specialite}}" ng-click="c.choisir('')">Toutes</button>
+    <button type="button" class="tp-carte-pill" ng-repeat="s in data.c.specialites" ng-class="{on: c.specialite == s.id}" aria-pressed="{{c.specialite == s.id}}" ng-click="c.choisir(s.id)">{{s.nom}}</button>
+  </div>
+  <div class="tp-carte-grille">
+    <div class="tp-carte-map" id="{{c.idCarte}}" role="application" aria-label="Carte de Dakar avec les hôpitaux"></div>
+    <aside class="tp-carte-liste" aria-label="Hôpitaux">
+      <div class="tp-carte-leg">
+        <span><i class="v"></i>{{c.specialite ? '2 lits et plus' : '5 lits et plus'}}</span><span><i class="o"></i>{{c.specialite ? '1 lit' : '1 à 4'}}</span><span><i class="r"></i>complet</span><span ng-if="c.specialite"><i class="g"></i>sans ce service</span>
+      </div>
+      <button type="button" class="tp-carte-h" ng-repeat="h in c.liste" ng-class="{actif: c.selection == h.id}" ng-click="c.montrer(h)">
+        <span class="tp-carte-pt" ng-class="h.niveau"></span>
+        <span class="tp-carte-hn"><strong>{{h.nom}}</strong><span class="tp-muted">{{h.zone}}</span></span>
+        <span class="tp-carte-hl">{{h.libelle}}</span>
+      </button>
+      <div class="tp-carte-tr" ng-if="data.c.detaille && c.voir.transferts && data.c.transferts.length">
+        <span class="tp-label">Transferts en cours</span>
+        <a ng-repeat="t in data.c.transferts" href="?id=tp_demande&sys_id={{t.id}}" class="tp-carte-trl">
+          <span><strong>{{t.numero}}</strong> · {{t.urgenceLabel}}<br><span class="tp-muted">{{t.origine}} → {{t.destination}}</span></span>
+          <span class="tp-mt-chip" ng-if="t.v && t.v.texte" ng-class="t.v.classe">{{t.v.depasse ? 'Retard' : 'Arrivée'}} {{t.v.texte}}</span>
+        </a>
+      </div>
+    </aside>
+  </div>
+  <p class="tp-muted tp-carte-src">Positions : coordonnées des localisations ServiceNow · Fond de carte © contributeurs OpenStreetMap</p>
+</section>

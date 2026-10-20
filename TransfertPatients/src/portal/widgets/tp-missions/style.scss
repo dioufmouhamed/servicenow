@@ -1,0 +1,25 @@
+.tp-mis { max-width: 640px; margin: 0 auto; }
+.tp-mis-carte { display: flex; flex-direction: column; gap: 6px; width: 100%; text-align: left; background: #fff; border: 1px solid #E3ECEA;
+  border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(8, 63, 59, .08); }
+.tp-mis-carte.a-accepter { border: 2px solid #C62828; }
+.tp-mis-carte.terminee { opacity: .7; }
+.tp-mis-l1 { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tp-mis-l2 { font-size: 15px; color: #3D4E52; }
+.tp-mis-bilan { text-align: center; margin-top: 8px; }
+.tp-mis-tete { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.tp-mis-tete .tp-h2 { margin: 0; flex: 1; }
+.tp-mis-bloc { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; margin-bottom: 12px; }
+.tp-mis-map-bloc { padding: 0; overflow: hidden; }
+.tp-mis-map { height: 220px; z-index: 0; }
+.tp-mis-pad { padding: 10px 14px; }
+.tp-mis-itin { min-height: 36px; padding: 0 14px; }
+.tp-mis-etapes { list-style: none; gap: 10px; }
+.tp-mis-etapes li { display: flex; align-items: center; gap: 10px; }
+.tp-mis-etapes li.cour .tp-mis-en strong { color: #7A4A06; }
+.tp-mis-en { flex: 1; display: flex; flex-direction: column; font-size: 14px; }
+.tp-mis-eh { font-size: 12px; text-align: right; }
+.tp-mis-action { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.tp-mis-gros { width: 100%; min-height: 56px; font-size: 17px; border-radius: 14px; }
+.tp-mis-gros.vert { background: #2E7D32; }
+.tp-mis-gros.vert:hover { background: #1F5130; }
+.tp-mis-amb { background: #185FA5; color: #fff; border: 3px solid #fff; border-radius: 50%; width: 24px; height: 24px; box-shadow: 0 1px 4px rgba(0, 0, 0, .35); }

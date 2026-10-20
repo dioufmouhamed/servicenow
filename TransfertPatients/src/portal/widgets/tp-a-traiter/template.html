@@ -1,0 +1,53 @@
+<section aria-labelledby="tp-at-titre" ng-if="data.coordinateur">
+  <div class="tp-section-head">
+    <h2 id="tp-at-titre" class="tp-h2">À traiter maintenant</h2>
+    <a href="?id=tp_demandes" class="tp-lien">Voir toutes les demandes reçues</a>
+  </div>
+  <div class="tp-card tp-empty" ng-if="!data.items.length">
+    Aucune demande à traiter. Vous êtes notifié dès qu'une demande correspond à vos services.
+  </div>
+  <article class="tp-card tp-at" ng-repeat="d in data.items track by d.reponseId">
+    <div class="tp-at-top">
+      <span class="tp-chip tp-u{{d.urgence}}">{{d.urgenceLabel}}</span>
+      <a class="tp-at-num" href="?id=tp_demande&sys_id={{d.id}}">{{d.numero}}</a>
+      <span class="tp-at-delai">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span class="tp-cd-live" ng-class="d.cd.classe" aria-hidden="true">{{d.cd.texte}}</span>
+        <span class="tp-sr">Temps restant pour répondre : {{d.cd.lisible}}</span>
+      </span>
+    </div>
+    <div class="row">
+      <div class="col-sm-7">
+        <div class="tp-at-titre">{{d.specialite}} · {{d.niveau}}</div>
+        <div class="tp-at-ligne">Depuis {{d.origine}}<span ng-if="d.distance"> ({{d.distance}})</span> · patient {{d.patient}}</div>
+        <div class="tp-at-ligne">{{d.transportLabel}}</div>
+      </div>
+      <div class="col-sm-5">
+        <div class="tp-label">Équipements requis</div>
+        <div class="tp-at-tags"><span class="tp-tag" ng-repeat="e in d.equipements">{{e}}</span><span class="tp-muted" ng-if="!d.equipements.length">Aucun</span></div>
+      </div>
+    </div>
+    <div class="tp-at-actions">
+      <label class="tp-field tp-at-champ" ng-if="c.mode[d.reponseId] != 'refus'">
+        Service proposé
+        <select ng-model="c.service[d.reponseId]" ng-init="c.service[d.reponseId] = c.service[d.reponseId] || d.serviceId">
+          <option ng-repeat="s in d.services" value="{{s.id}}" ng-disabled="s.complet">{{s.label}}</option>
+        </select>
+      </label>
+      <label class="tp-field tp-at-champ" ng-if="c.mode[d.reponseId] == 'refus'">
+        Motif du refus
+        <select ng-model="c.motif[d.reponseId]">
+          <option value="">— Choisir —</option>
+          <option ng-repeat="m in data.motifs" value="{{m.valeur}}">{{m.label}}</option>
+        </select>
+      </label>
+      <div class="tp-at-btns">
+        <a class="tp-btn tp-btn-link" href="?id=tp_demande&sys_id={{d.id}}">Détails</a>
+        <button type="button" class="tp-btn tp-btn-ghost" ng-if="c.mode[d.reponseId] != 'refus'" ng-click="c.mode[d.reponseId] = 'refus'">Refuser…</button>
+        <button type="button" class="tp-btn tp-btn-ghost" ng-if="c.mode[d.reponseId] == 'refus'" ng-click="c.mode[d.reponseId] = ''">Retour</button>
+        <button type="button" class="tp-btn tp-btn-danger" ng-if="c.mode[d.reponseId] == 'refus'" ng-disabled="!c.motif[d.reponseId] || c.envoi" ng-click="c.repondre(d, 'refusee')">Confirmer le refus</button>
+        <button type="button" class="tp-btn tp-btn-primary" ng-if="c.mode[d.reponseId] != 'refus'" ng-disabled="c.envoi" ng-click="c.repondre(d, 'acceptee')">Accepter</button>
+      </div>
+    </div>
+  </article>
+</section>

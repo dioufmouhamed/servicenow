@@ -1,0 +1,13 @@
+.tp-header { background: #fff; border-bottom: 1px solid #D5E2DF; font-family: Lato, "Helvetica Neue", Arial, sans-serif; }
+.tp-header-in { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; padding-top: 12px; padding-bottom: 12px; }
+.tp-brand { display: flex; align-items: center; gap: 12px; color: #1E2B2E; text-decoration: none !important; }
+.tp-logo { width: 40px; height: 40px; border-radius: 10px; background: #0B5D57; display: flex; align-items: center; justify-content: center; }
+.tp-brand-txt { display: flex; flex-direction: column; line-height: 1.25; }
+.tp-brand-t { font-weight: 900; font-size: 18px; color: #1E2B2E; }
+.tp-brand-s { font-size: 13px; color: #5A6B6F; }
+.tp-nav { display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 320px; }
+.tp-nav a { padding: 10px 14px; border-radius: 8px; color: #3D4E52; font-size: 15px; text-decoration: none; }
+.tp-nav a:hover { background: #F3F6F6; color: #083F3B; }
+.tp-nav a.actif { background: #E4F1EE; color: #083F3B; font-weight: 700; }
+.tp-avatar { width: 42px; height: 42px; border-radius: 50%; background: #083F3B; color: #fff; border: 0; font-weight: 700; font-size: 15px; }
+.tp-etab { color: #0B5D57; font-weight: 700; }

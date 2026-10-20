@@ -1,0 +1,10 @@
+.tp-lien { font-weight: 700; font-size: 15px; }
+.tp-md { padding: 0; overflow-x: auto; }
+.tp-md-ligne { display: grid; grid-template-columns: 120px minmax(0, 1.4fr) minmax(120px, 1.6fr) 150px; align-items: center; gap: 16px;
+  padding: 18px 24px; border-bottom: 1px solid #EDF2F1; color: #1E2B2E; text-decoration: none !important; min-width: 620px; }
+.tp-md-ligne:last-child { border-bottom: 0; }
+.tp-md-ligne:hover { background: #F7FAF9; color: #1E2B2E; }
+.tp-md-num { font-weight: 900; }
+.tp-md-txt { display: flex; flex-direction: column; gap: 2px; }
+.tp-md-spe { font-weight: 700; }
+.tp-md-ligne .tp-chip { justify-self: end; }

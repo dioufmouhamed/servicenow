@@ -1,0 +1,17 @@
+<section id="capacite" class="tp-card tp-card-flat" aria-labelledby="tp-cap-titre" ng-if="data.coordinateur">
+  <div class="tp-section-head">
+    <h2 id="tp-cap-titre" class="tp-h2">Capacité de mes services</h2>
+    <span class="tp-muted">lits libres</span>
+  </div>
+  <div class="tp-empty" ng-if="!data.items.length">Aucun service rattaché à votre compte.</div>
+  <div class="tp-cap" ng-repeat="s in data.items track by s.id">
+    <div class="tp-cap-ligne">
+      <span class="tp-cap-nom">{{s.nom}}<span class="tp-muted" ng-if="data.plusieurs"> · {{s.etablissement}}</span></span>
+      <button type="button" class="tp-cap-btn" aria-label="Retirer un lit libre — {{s.nom}}" ng-disabled="c.envoi || s.dispo <= 0" ng-click="c.ajuster(s, -1)">−</button>
+      <span class="tp-cap-val"><strong>{{s.dispo}}</strong> / {{s.total}}</span>
+      <button type="button" class="tp-cap-btn" aria-label="Ajouter un lit libre — {{s.nom}}" ng-disabled="c.envoi || s.dispo >= s.total" ng-click="c.ajuster(s, 1)">+</button>
+    </div>
+    <div class="tp-cap-barre"><div ng-style="{'width': s.pct + '%'}" ng-class="{'bas': s.bas}"></div></div>
+  </div>
+  <div class="tp-muted" ng-if="data.items.length">Visible immédiatement par la régulation et utilisée pour cibler les demandes.</div>
+</section>

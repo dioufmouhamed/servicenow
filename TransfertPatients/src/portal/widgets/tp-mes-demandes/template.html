@@ -1,0 +1,17 @@
+<section aria-labelledby="tp-md-titre">
+  <div class="tp-section-head">
+    <h2 id="tp-md-titre" class="tp-h2">Mes demandes émises</h2>
+    <a href="?id=tp_demandes&onglet=emises" class="tp-lien">Tout voir</a>
+  </div>
+  <div class="tp-card tp-card-flat tp-md">
+    <div class="tp-empty" ng-if="!data.items.length">Aucune demande émise par vous ou votre établissement.</div>
+    <a class="tp-md-ligne" ng-repeat="m in data.items" href="?id=tp_demande&sys_id={{m.id}}">
+      <span class="tp-md-num">{{m.numero}}</span>
+      <span class="tp-md-txt"><span class="tp-md-spe">{{m.specialite}}</span><span class="tp-muted">{{m.detail}}</span></span>
+      <span class="tp-steps" aria-label="Étape {{m.etape + 1}} sur 6">
+        <span ng-repeat="i in [0,1,2,3,4,5]" ng-class="{'fait': i < m.etape, 'courant': i == m.etape}"></span>
+      </span>
+      <span class="tp-chip" ng-class="{'tp-etat': m.actif, 'tp-ok': m.etatValeur == '3', 'tp-ko': m.etatValeur == '4' || m.etatValeur == '7'}">{{m.etat}}</span>
+    </a>
+  </div>
+</section>

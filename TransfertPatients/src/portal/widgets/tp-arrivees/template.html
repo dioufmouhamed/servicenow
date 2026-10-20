@@ -1,0 +1,24 @@
+<section class="tp-card tp-card-flat" aria-labelledby="tp-arr-titre">
+  <h2 id="tp-arr-titre" class="tp-h2">Arrivées attendues</h2>
+  <div class="tp-empty" ng-if="!data.items.length">Aucun patient en route vers votre établissement.</div>
+  <div class="tp-arr" ng-repeat="a in data.items">
+    <div class="tp-arr-tete">
+      <span class="tp-arr-ico" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B5D57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V8h11v8M14 11h4l3 3v2h-7"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M8.5 10.5v3M7 12h3"/></svg></span>
+      <div class="tp-arr-eta" ng-if="a.transport.eta && !a.transport.termine">
+        <span class="tp-label">Arrivée</span><strong>{{a.transport.eta}}</strong>
+        <span class="tp-mt-chip" ng-if="a.mt.phase == 'arrivee' && a.v.texte" ng-class="a.v.classe">{{a.v.depasse ? 'Retard' : 'Exigée'}} {{a.v.texte}}</span>
+        <span class="tp-chip" ng-if="a.transport.retardMin > 0" ng-class="a.transport.retardMin > 15 ? 'tp-ko' : 'tp-u2'">+{{a.transport.retardMin}} min</span>
+      </div>
+      <div class="tp-arr-corps">
+        <div class="tp-arr-titre">{{a.numero}} · {{a.specialite}}</div>
+        <div class="tp-arr-l">Depuis {{a.origine}}</div>
+        <div class="tp-arr-l" ng-if="a.transport.agent">Équipage : {{a.transport.agent}}<span ng-if="a.transport.vehicule"> · {{a.transport.vehicule.tag}}</span></div>
+        <div class="tp-arr-l" ng-if="!a.transport.agent && a.transport">{{a.transport.numero}} · {{a.transport.etat}}</div>
+      </div>
+    </div>
+    <ol class="tp-arr-taches" ng-if="a.transport">
+      <li ng-repeat="t in a.transport.taches"><span class="tp-dot" ng-class="t.statut"></span><span ng-class="{'tp-gras': t.statut == 'courant', 'tp-muted': t.statut == 'futur'}">{{t.nom}} · {{t.etat}}<span class="tp-muted" ng-if="t.prevu"> · {{t.reel || t.prevu}}</span></span></li>
+    </ol>
+    <a href="?id=tp_demande&sys_id={{a.id}}" class="tp-lien">Suivre le transfert</a>
+  </div>
+</section>

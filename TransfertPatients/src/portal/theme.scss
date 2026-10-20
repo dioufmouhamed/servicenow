@@ -1,0 +1,88 @@
+/* Portail Waluu — styles partagés (thème « Waluu ») */
+$tp-teal: #0B5D57;
+$tp-teal-d: #083F3B;
+$tp-mint: #E4F1EE;
+$tp-amber: #E39B2D;
+$tp-ink: #1E2B2E;
+$tp-ink-2: #3D4E52;
+$tp-grey: #5A6B6F;
+$tp-line: #D5E2DF;
+$tp-line-2: #E3ECEA;
+$tp-bg: #F3F6F6;
+$tp-red-bg: #FBE3E1;
+$tp-red: #8E1F16;
+$tp-amb-bg: #FCEBD0;
+$tp-amb: #7A4A06;
+$tp-green-bg: #DDEBE0;
+$tp-green: #1F5130;
+
+body, .tp-root { font-family: Lato, "Helvetica Neue", Arial, sans-serif; color: $tp-ink; background: $tp-bg; }
+a { color: $tp-teal; } a:hover, a:focus { color: $tp-teal-d; }
+.tp-wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+@media (max-width: 767px) { .tp-wrap { padding: 0 16px; } }
+
+.tp-card { background: #fff; border-radius: 16px; padding: 22px 24px; margin-bottom: 24px;
+  box-shadow: 0 1px 2px rgba(8, 63, 59, .08), 0 6px 20px rgba(8, 63, 59, .06); }
+.tp-card-flat { box-shadow: 0 1px 2px rgba(8, 63, 59, .08); }
+.tp-h1 { font-size: 30px; font-weight: 900; margin: 0; }
+.tp-h2 { font-size: 20px; font-weight: 900; margin: 0 0 16px; }
+.tp-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.tp-section-head .tp-h2 { margin: 0; }
+.tp-muted { color: $tp-grey; font-size: 13px; }
+.tp-label { font-size: 13px; font-weight: 700; color: $tp-grey; text-transform: uppercase; letter-spacing: .05em; }
+
+.tp-chip { display: inline-block; padding: 5px 10px; border-radius: 999px; font-size: 13px; font-weight: 900; line-height: 1.2; white-space: nowrap; }
+.tp-u1 { background: $tp-red-bg; color: $tp-red; }
+.tp-u2 { background: $tp-amb-bg; color: $tp-amb; }
+.tp-u3 { background: $tp-line-2; color: $tp-ink-2; }
+.tp-etat { background: $tp-mint; color: $tp-teal-d; font-weight: 700; }
+.tp-ok { background: $tp-green-bg; color: $tp-green; }
+.tp-ko { background: $tp-red-bg; color: $tp-red; }
+.tp-tag { display: inline-block; padding: 5px 10px; border-radius: 8px; background: $tp-mint; color: $tp-teal-d; font-size: 13px; font-weight: 700; margin: 0 6px 6px 0; }
+
+.tp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px;
+  border: 0; font-weight: 900; font-size: 15px; cursor: pointer; text-decoration: none; transition: background .15s; }
+.tp-btn:hover, .tp-btn:focus { text-decoration: none; }
+.tp-btn-primary { background: $tp-teal; color: #fff; } .tp-btn-primary:hover { background: $tp-teal-d; color: #fff; }
+.tp-btn-amber { background: $tp-amber; color: #2B1A00; } .tp-btn-amber:hover { background: darken($tp-amber, 6%); color: #2B1A00; }
+.tp-btn-ghost { background: #fff; color: $tp-ink-2; border: 1.5px solid #B9CCC8; font-weight: 700; }
+.tp-btn-ghost:hover { border-color: $tp-teal; color: $tp-teal-d; }
+.tp-btn-link { background: none; color: $tp-teal; font-weight: 700; padding: 0 10px; }
+.tp-btn-danger { background: #fff; color: $tp-red; border: 1.5px solid $tp-red; }
+.tp-btn[disabled] { opacity: .5; cursor: not-allowed; }
+.tp-btn-block { width: 100%; }
+
+.tp-field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+.tp-field select, .tp-field input, .tp-field textarea { height: 46px; border: 1px solid #B9CCC8; border-radius: 10px; padding: 0 12px;
+  font-size: 15px; font-weight: 400; color: $tp-ink; background: #fff; }
+.tp-field textarea { height: auto; padding: 10px 12px; resize: vertical; }
+
+.tp-steps { display: flex; gap: 6px; }
+.tp-steps span { flex: 1 1 0; height: 8px; border-radius: 4px; background: $tp-line-2; }
+.tp-steps .fait { background: $tp-teal; }
+.tp-steps .courant { background: $tp-amber; }
+
+.tp-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #C9D8D5; flex: none; }
+.tp-dot.fait { background: $tp-teal; }
+.tp-dot.courant { background: $tp-amber; box-shadow: 0 0 0 4px $tp-amb-bg; }
+
+.tp-empty { text-align: center; padding: 28px 16px; color: $tp-grey; font-size: 15px; }
+.tp-live { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+.tp-live:before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #5FD3A8; }
+.tp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Minuteur de compte à rebours en temps réel (cartes à traiter, tableau de régulation, page demande) */
+.tp-cd-live { font-variant-numeric: tabular-nums; font-weight: 900; letter-spacing: .02em; }
+.tp-cd-live.ok { color: $tp-amb; }
+.tp-cd-live.urgent { color: $tp-red; animation: tp-cd-pulse 1s ease-in-out infinite; }
+.tp-cd-live.depasse { color: $tp-red; font-weight: 700; }
+@keyframes tp-cd-pulse { 50% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .tp-cd-live.urgent { animation: none; } }
+
+/* Pastille de minuteur d'étape (régulation, arrivées) */
+.tp-mt-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 900;
+  font-variant-numeric: tabular-nums; white-space: nowrap; background: $tp-amb-bg; color: $tp-amb; }
+.tp-mt-chip.urgent, .tp-mt-chip.depasse { background: $tp-red-bg; color: $tp-red; }
+.tp-mt-chip.urgent { animation: tp-cd-pulse 1s ease-in-out infinite; }
+.tp-mt-chip.chrono { background: $tp-mint; color: $tp-teal-d; }
+@media (prefers-reduced-motion: reduce) { .tp-mt-chip.urgent { animation: none; } }

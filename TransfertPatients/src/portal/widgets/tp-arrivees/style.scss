@@ -1,0 +1,13 @@
+.tp-arr { padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #EDF2F1; }
+.tp-arr:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+.tp-arr-tete { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; }
+.tp-arr-ico { width: 44px; height: 44px; flex: none; border-radius: 12px; background: #E4F1EE; display: flex; align-items: center; justify-content: center; }
+.tp-arr-titre { font-weight: 900; font-size: 16px; }
+.tp-arr-l { font-size: 14px; color: #3D4E52; }
+.tp-arr-taches { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+.tp-arr-taches li { display: flex; gap: 10px; align-items: center; }
+.tp-gras { font-weight: 900; }
+.tp-lien { font-weight: 700; font-size: 15px; }
+.tp-arr-corps { flex: 1; }
+.tp-arr-eta { order: 3; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.tp-arr-eta strong { font-size: 20px; font-weight: 900; line-height: 1; }

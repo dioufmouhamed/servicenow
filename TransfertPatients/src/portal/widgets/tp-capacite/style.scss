@@ -1,0 +1,11 @@
+.tp-cap { margin-bottom: 18px; }
+.tp-cap-ligne { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.tp-cap-nom { flex: 1; font-weight: 700; font-size: 15px; }
+.tp-cap-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid #B9CCC8; background: #fff; font-size: 20px; color: #3D4E52; line-height: 1; }
+.tp-cap-btn:hover:not([disabled]) { border-color: #0B5D57; color: #0B5D57; }
+.tp-cap-btn[disabled] { opacity: .4; }
+.tp-cap-val { min-width: 64px; text-align: center; font-size: 15px; }
+.tp-cap-val strong { font-size: 20px; font-weight: 900; }
+.tp-cap-barre { height: 8px; border-radius: 4px; background: #E3ECEA; overflow: hidden; }
+.tp-cap-barre div { height: 100%; background: #0B5D57; border-radius: 4px; transition: width .3s; }
+.tp-cap-barre div.bas { background: #E39B2D; }

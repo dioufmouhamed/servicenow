@@ -1,0 +1,42 @@
+<section class="tp-hero" aria-labelledby="tp-hero-titre">
+  <div class="tp-wrap">
+    <div class="tp-hero-top">
+      <div>
+        <div class="tp-hero-kicker" ng-if="data.a.sousTitre">{{data.a.sousTitre}}</div>
+        <h1 id="tp-hero-titre" class="tp-hero-titre">Bonjour, {{data.a.contexte.utilisateur}}</h1>
+      </div>
+      <span class="tp-live tp-hero-live">Mise à jour en temps réel</span>
+    </div>
+    <div class="tp-hero-alerte" ng-if="!data.a.contexte.coordinateur && !data.a.contexte.regulateur && !data.a.contexte.agent">
+      Votre compte n'est rattaché à aucun établissement. Demandez à l'administrateur de renseigner votre localisation ou votre groupe de coordination.
+    </div>
+    <div class="tp-kpis" ng-if="data.a.contexte.coordinateur || data.a.contexte.regulateur || data.a.contexte.agent">
+      <a class="tp-kpi tp-kpi-amber" href="?id=tp_demandes" ng-if="data.a.contexte.coordinateur">
+        <span class="tp-kpi-v">{{data.a.kpis.aTraiter}}</span>
+        <span class="tp-kpi-l">demande<span ng-if="data.a.kpis.aTraiter != 1">s</span> à traiter</span>
+        <span class="tp-kpi-d" ng-if="data.a.kpis.plusUrgente">la plus urgente expire dans {{data.a.kpis.plusUrgente}}</span>
+        <span class="tp-kpi-d" ng-if="!data.a.kpis.plusUrgente">aucune réponse attendue</span>
+      </a>
+      <div class="tp-kpi">
+        <span class="tp-kpi-v">{{data.a.kpis.enRoute}}</span>
+        <span class="tp-kpi-l">patient<span ng-if="data.a.kpis.enRoute != 1">s</span> attendu<span ng-if="data.a.kpis.enRoute != 1">s</span></span>
+        <span class="tp-kpi-d">{{data.a.kpis.enRouteNumero || 'aucun transport vers vous'}}</span>
+      </div>
+      <a class="tp-kpi" href="#capacite" ng-if="data.a.contexte.coordinateur">
+        <span class="tp-kpi-v">{{data.a.kpis.lits}}</span>
+        <span class="tp-kpi-l">lits disponibles</span>
+        <span class="tp-kpi-d">sur {{data.a.kpis.total}} · {{data.a.kpis.services}} services</span>
+      </a>
+      <a class="tp-kpi tp-kpi-amber" ng-if="data.a.contexte.agent && data.a.contexte.producteur" href="?id=sc_cat_item&sys_id={{data.a.contexte.producteur}}">
+        <span class="tp-kpi-v">+</span>
+        <span class="tp-kpi-l">Nouvelle demande de transfert</span>
+        <span class="tp-kpi-d">formulaire pré-rempli pour votre établissement</span>
+      </a>
+      <div class="tp-kpi">
+        <span class="tp-kpi-v">{{data.a.kpis.emises}}</span>
+        <span class="tp-kpi-l">demandes émises en cours</span>
+        <span class="tp-kpi-d">dont {{data.a.kpis.emisesAttente}} en attente de réponses</span>
+      </div>
+    </div>
+  </div>
+</section>

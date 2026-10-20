@@ -1,0 +1,11 @@
+.tp-lien { font-weight: 700; font-size: 15px; }
+.tp-at-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+.tp-at-num { font-size: 14px; color: #5A6B6F; font-weight: 700; }
+.tp-at-delai { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 20px; color: #7A4A06; }
+.tp-at-delai.tp-rouge { color: #8E1F16; }
+.tp-at-titre { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+.tp-at-ligne { font-size: 15px; color: #3D4E52; }
+.tp-at-tags { margin-top: 8px; }
+.tp-at-actions { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #E3ECEA; }
+.tp-at-champ { flex: 1 1 240px; margin: 0; }
+.tp-at-btns { display: flex; flex-wrap: wrap; gap: 10px; }

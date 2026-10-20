@@ -1,0 +1,241 @@
+<div class="tp-dem">
+  <div class="tp-card tp-empty" ng-if="data.d.introuvable">Demande introuvable.</div>
+  <div class="tp-card tp-empty" ng-if="data.d.interdit">Cette demande ne concerne pas votre établissement.</div>
+
+  <div ng-if="data.d.id">
+    <nav class="tp-ariane" aria-label="Fil d'Ariane">
+      <a href="?id=tp_accueil">Accueil</a><span aria-hidden="true">›</span>
+      <a ng-href="{{data.regulation ? '?id=tp_regulation' : '?id=tp_demandes'}}">{{data.regulation ? 'Régulation' : 'Demandes'}}</a><span aria-hidden="true">›</span>
+      <span>{{data.d.numero}}</span>
+    </nav>
+
+    <section class="tp-card">
+      <div class="tp-dem-tete">
+        <div class="tp-dem-id">
+          <div class="tp-dem-chips">
+            <span class="tp-chip tp-u{{data.d.urgence}}">{{data.d.urgenceLabel}}</span>
+            <span class="tp-chip" ng-class="{'tp-etat': data.d.actif, 'tp-ok': data.d.etatValeur == '3', 'tp-ko': data.d.etatValeur == '4' || data.d.etatValeur == '7'}">{{data.d.etat}}</span>
+          </div>
+          <h1 class="tp-h1">{{data.d.numero}} · {{data.d.specialite}}</h1>
+          <div class="tp-dem-trajet">{{data.d.origine}} <span aria-hidden="true">→</span> {{data.d.destination || 'destination à retenir'}}</div>
+          <div class="tp-dem-lien" ng-if="data.d.precedente">Republication de <a href="?id=tp_demande&sys_id={{data.d.precedente.id}}">{{data.d.precedente.numero}}</a></div>
+        </div>
+        <div class="tp-mt" ng-if="data.d.mt" ng-class="c.mtv.classe" role="timer" aria-live="off">
+          <div class="tp-mt-txt">
+            <span class="tp-mt-titre">{{data.d.mt.titre}}</span>
+            <span class="tp-mt-sous" ng-if="data.d.mt.sous">{{data.d.mt.sous}}<span ng-if="data.d.mt.phase == 'arrivee' && data.d.transport.eta"> · arrivée estimée FSM {{data.d.transport.eta}}</span></span>
+            <span class="tp-mt-bilan" ng-if="data.d.mt.bilan.length">
+              <span class="tp-chip" ng-repeat="b in data.d.mt.bilan" ng-class="b.ok ? 'tp-ok' : 'tp-ko'">{{b.label}} {{b.texte}}<span ng-if="b.cible"> / {{b.cible}}</span> {{b.ok ? '✓' : '✗'}}</span>
+            </span>
+            <span class="tp-mt-barre" ng-if="c.mtv.progres !== null && c.mtv.progres !== undefined"><span ng-style="{width: c.mtv.progres + '%'}"></span></span>
+          </div>
+          <strong class="tp-mt-cd" ng-if="c.mtv.texte" aria-hidden="true">{{c.mtv.texte}}</strong>
+          <span class="tp-sr" ng-if="c.mtv.texte">{{data.d.mt.titre}} : {{c.mtv.depasse ? 'dépassé de ' : ''}}{{c.mtv.texte}}</span>
+        </div>
+        <div class="tp-dem-btns">
+          <button type="button" class="tp-btn tp-btn-primary" ng-if="data.d.peutPublier" ng-click="c.etat('10')">Publier</button>
+          <button type="button" class="tp-btn tp-btn-ghost" ng-if="data.d.peutAnnuler" ng-click="c.etat('7')">Annuler la demande</button>
+        </div>
+      </div>
+      <ol class="tp-etapes" aria-label="Étapes du transfert">
+        <li ng-repeat="e in data.d.etapes" ng-class="e.statut">
+          <span class="tp-etape-barre"></span>
+          <span class="tp-etape-nom"><span class="tp-etape-pastille">{{e.statut == 'fait' ? '✓' : $index + 1}}</span>{{e.nom}}</span>
+          <span class="tp-etape-date">{{e.date}}</span>
+        </li>
+      </ol>
+    </section>
+
+    <div class="row">
+      <div class="col-md-8">
+        <section class="tp-card tp-trajet" ng-if="data.d.trajet" aria-labelledby="tp-traj-titre">
+          <div class="tp-section-head">
+            <div>
+              <h2 id="tp-traj-titre" class="tp-h2">Trajet du patient</h2>
+              <span class="tp-muted">{{data.d.trajet.origine}} → {{data.d.trajet.destination}}<span ng-if="data.d.trajet.service"> · {{data.d.trajet.service}}</span></span>
+            </div>
+            <a class="tp-btn tp-btn-ghost tp-traj-osm" href="{{data.d.trajet.osm}}" target="_blank" rel="noopener">Itinéraire</a>
+          </div>
+          <div class="tp-traj-map" id="{{c.idTrajet}}" role="img" aria-label="Carte du trajet de {{data.d.trajet.origine}} à {{data.d.trajet.destination}}"></div>
+          <div class="tp-sv-kpi">
+            <div><span class="tp-label">Par la route</span><strong>{{data.d.trajet.km ? data.d.trajet.km + ' km · ≈ ' + data.d.trajet.minutes + ' min' : 'tracé direct (itinéraire indisponible)'}}</strong></div>
+            <div><span class="tp-label">Étape</span><strong>{{c.traj.etape}}</strong></div>
+            <div ng-if="data.d.transport.eta"><span class="tp-label">{{data.d.trajet.arrive ? 'Arrivé à' : 'Arrivée estimée FSM'}}</span><strong>{{data.d.transport.eta}}</strong></div>
+            <div ng-if="data.d.trajet.vehicule"><span class="tp-label">Véhicule</span><strong>{{data.d.trajet.vehicule}}</strong></div>
+          </div>
+          <p class="tp-muted tp-traj-note">Position de l'ambulance estimée d'après l'avancement de la tâche Transport (pas de GPS embarqué). Itinéraire © OSRM, fond de carte © contributeurs OpenStreetMap.</p>
+        </section>
+        <section class="tp-card tp-expiree" ng-if="data.d.etatValeur == '4'" aria-labelledby="tp-exp-titre">
+          <div class="tp-exp-tete">
+            <div>
+              <h2 id="tp-exp-titre" class="tp-h2">Demande expirée</h2>
+              <p class="tp-exp-texte" ng-if="!data.d.republication">Aucun établissement n'a accepté avant la date limite.</p>
+              <p class="tp-exp-texte" ng-if="data.d.republication">Republiée en <a href="?id=tp_demande&sys_id={{data.d.republication.id}}">{{data.d.republication.numero}}</a>.</p>
+            </div>
+            <button type="button" class="tp-btn tp-btn-amber" ng-if="data.d.peutRepublier" ng-disabled="c.envoi" ng-click="c.republier()">Republier la demande</button>
+          </div>
+          <div ng-if="data.d.relances.length">
+            <div class="tp-label tp-exp-label">Établissements qui demandent la republication</div>
+            <div class="tp-relance" ng-repeat="r in data.d.relances">
+              <span class="tp-relance-nom">{{r.etablissement}}<span ng-if="r.service"> · {{r.service}}</span></span>
+              <span class="tp-muted">{{r.quand}}<span ng-if="r.commentaire"> · {{r.commentaire}}</span></span>
+              <span class="tp-chip" ng-class="r.statut == 'traitee' ? 'tp-ok' : 'tp-u2'">{{r.statutLabel}}</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="tp-card tp-card-flat" ng-if="data.d.reponses" aria-labelledby="tp-rep-titre">
+          <h2 id="tp-rep-titre" class="tp-h2">Réponses des établissements ({{data.d.reponses.length}})</h2>
+          <div class="tp-reps">
+            <article class="tp-rep" ng-repeat="r in data.d.reponses" ng-class="{'acceptee': r.decision == 'acceptee', 'retenue': r.decision == 'retenue'}">
+              <div class="tp-rep-tete">
+                <div><div class="tp-rep-nom">{{r.etablissement}} <span class="tp-chip tp-ok tp-rep-proche" ng-if="r.plusProche">Le plus proche</span></div><div class="tp-muted">{{r.zone}}<span ng-if="r.distance"> · {{r.distance}}</span></div></div>
+                <span class="tp-chip" ng-class="{'tp-ok': r.decision == 'acceptee' || r.decision == 'retenue', 'tp-ko': r.decision == 'refusee', 'tp-u2': r.decision == 'en_attente', 'tp-u3': r.decision == 'non_retenue' || r.decision == 'expiree'}">{{r.decisionLabel}}</span>
+              </div>
+              <dl class="tp-rep-dl">
+                <div><dt>Service proposé</dt><dd>{{r.service}}</dd></div>
+                <div><dt>Lits libres</dt><dd>{{r.lits}}</dd></div>
+                <div><dt>Arrivée possible</dt><dd>{{r.arrivee}}</dd></div>
+                <div><dt>Répondu</dt><dd>{{r.quand}}</dd></div>
+              </dl>
+              <div class="tp-rep-delai" ng-if="r.estimMin && (r.decision == 'acceptee' || r.decision == 'en_attente')">
+                <span class="tp-chip" ng-class="r.estimMin <= r.delaiPec ? 'tp-ok' : 'tp-ko'">≈ {{r.estimMin}} min · {{r.estimMin <= r.delaiPec ? 'tient les ' + r.delaiPec + ' min' : 'délai de ' + r.delaiPec + ' min intenable'}}</span>
+              </div>
+              <div class="tp-rep-com" ng-if="r.commentaire">{{r.commentaire}}</div>
+              <button type="button" class="tp-btn tp-btn-primary tp-btn-block" ng-if="r.retenable" ng-disabled="c.envoi" ng-click="c.retenir(r)">Retenir cette destination</button>
+            </article>
+          </div>
+          <div class="tp-muted">Retenir réserve 1 lit dans le service, clôture les autres réponses et crée l'ordre de transport Field Service.</div>
+        </section>
+
+        <section class="tp-card tp-card-flat" aria-labelledby="tp-besoin-titre">
+          <h2 id="tp-besoin-titre" class="tp-h2">Patient et besoin médical</h2>
+          <dl class="tp-infos">
+            <div ng-repeat="i in data.d.infos"><dt class="tp-label">{{i.k}}</dt><dd>{{i.v}}</dd></div>
+          </dl>
+          <div class="tp-motif" ng-if="data.d.motif">{{data.d.motif}}</div>
+        </section>
+
+        <section class="tp-card tp-card-flat" aria-labelledby="tp-parcours-titre">
+          <h2 id="tp-parcours-titre" class="tp-h2">Parcours du transfert</h2>
+          <ol class="tp-parcours">
+            <li ng-repeat="p in data.d.parcours">
+              <span class="tp-p-heure">{{p.heure}}</span>
+              <span class="tp-p-rail"><span class="tp-dot" ng-class="p.statut"></span><span class="tp-p-ligne"></span></span>
+              <span class="tp-p-txt"><span class="tp-p-titre" ng-class="{'tp-muted': p.statut == 'futur'}">{{p.titre}}</span><span class="tp-muted">{{p.detail}}</span></span>
+            </li>
+          </ol>
+        </section>
+      </div>
+
+      <div class="col-md-4">
+        <section class="tp-card" ng-if="data.d.maReponse && data.d.maReponse.modifiable" aria-labelledby="tp-vr-titre">
+          <h2 id="tp-vr-titre" class="tp-h2">Votre réponse</h2>
+          <div class="tp-muted tp-vr-etab">{{data.d.maReponse.etablissement}} · actuellement : {{data.d.maReponse.decisionLabel}}</div>
+          <div class="tp-vr-choix" role="radiogroup" aria-label="Décision">
+            <button type="button" role="radio" aria-checked="{{c.f.decision == 'acceptee'}}" class="tp-vr-opt" ng-class="{'on-ok': c.f.decision == 'acceptee'}" ng-click="c.f.decision = 'acceptee'">Accepter</button>
+            <button type="button" role="radio" aria-checked="{{c.f.decision == 'refusee'}}" class="tp-vr-opt" ng-class="{'on-ko': c.f.decision == 'refusee'}" ng-click="c.f.decision = 'refusee'">Refuser</button>
+          </div>
+          <div ng-if="c.f.decision == 'acceptee'">
+            <label class="tp-field">Service proposé
+              <select ng-model="c.f.serviceId"><option ng-repeat="s in data.d.services" value="{{s.id}}" ng-disabled="s.complet">{{s.label}}</option></select>
+            </label>
+            <label class="tp-field">Arrivée possible à partir de
+              <input type="text" ng-model="c.f.arrivee" placeholder="AAAA-MM-JJ HH:MM:SS">
+            </label>
+          </div>
+          <label class="tp-field" ng-if="c.f.decision == 'refusee'">Motif du refus (obligatoire)
+            <select ng-model="c.f.motif"><option value="">— Choisir —</option><option ng-repeat="m in data.d.motifs" value="{{m.valeur}}">{{m.label}}</option></select>
+          </label>
+          <label class="tp-field">Commentaire pour la régulation
+            <textarea rows="3" ng-model="c.f.commentaire"></textarea>
+          </label>
+          <button type="button" class="tp-btn tp-btn-primary tp-btn-block" ng-disabled="c.envoi || !c.f.decision || (c.f.decision == 'refusee' && !c.f.motif)" ng-click="c.repondre()">
+            {{c.f.decision == 'refusee' ? 'Envoyer mon refus' : 'Envoyer mon acceptation'}}
+          </button>
+          <p class="tp-muted tp-vr-note">La régulation est notifiée immédiatement. Votre réponse est définitive une fois envoyée.</p>
+        </section>
+
+        <section class="tp-card tp-relancer" ng-if="data.d.peutRelancer" aria-labelledby="tp-rl-titre">
+          <h2 id="tp-rl-titre" class="tp-h2">Vous avez manqué cette demande ?</h2>
+          <p class="tp-muted">Signalez au demandeur que votre établissement peut accueillir le patient : il pourra republier la demande.</p>
+          <label class="tp-field">Service disponible
+            <select ng-model="c.rl.serviceId"><option value="">— Choisir —</option><option ng-repeat="s in data.d.services" value="{{s.id}}" ng-disabled="s.complet">{{s.label}}</option></select>
+          </label>
+          <label class="tp-field">Message au demandeur
+            <textarea rows="3" ng-model="c.rl.commentaire" placeholder="Lit disponible en réanimation dès 15:00"></textarea>
+          </label>
+          <button type="button" class="tp-btn tp-btn-amber tp-btn-block" ng-disabled="c.envoi || !c.rl.serviceId" ng-click="c.relancer()">Relancer le demandeur</button>
+        </section>
+
+        <section class="tp-card" ng-if="data.d.maReponse && !data.d.maReponse.modifiable">
+          <h2 class="tp-h2">Votre réponse</h2>
+          <p class="tp-muted" ng-if="data.d.maReponse.decision == 'acceptee' || data.d.maReponse.decision == 'refusee'">Réponse envoyée : elle ne peut plus être modifiée.</p>
+          <span class="tp-chip" ng-class="{'tp-ok': data.d.maReponse.decision == 'retenue' || data.d.maReponse.decision == 'acceptee', 'tp-ko': data.d.maReponse.decision == 'refusee', 'tp-u3': data.d.maReponse.decision == 'non_retenue' || data.d.maReponse.decision == 'expiree'}">{{data.d.maReponse.decisionLabel}}</span>
+        </section>
+
+        <section class="tp-card tp-suivi" ng-if="data.d.transport" aria-labelledby="tp-tr-titre">
+          <div class="tp-sv-tete">
+            <div>
+              <h2 id="tp-tr-titre" class="tp-h2">Transport · {{data.d.transport.numero}}</h2>
+              <div class="tp-muted">{{data.d.origine}} → {{data.d.destination}} · {{data.d.transport.mode}}</div>
+            </div>
+            <div class="tp-sv-eta" ng-if="data.d.transport.eta">
+              <span class="tp-label">{{data.d.transport.termine ? 'Arrivé à' : 'Arrivée estimée'}}</span>
+              <strong>{{data.d.transport.eta}}</strong>
+              <span class="tp-chip" ng-if="!data.d.transport.termine && data.d.transport.retardMin > 0" ng-class="data.d.transport.retardMin > 15 ? 'tp-ko' : 'tp-u2'">+{{data.d.transport.retardMin}} min</span>
+              <span class="tp-chip tp-ok" ng-if="!data.d.transport.termine && data.d.transport.retardMin <= 0">À l'heure</span>
+            </div>
+          </div>
+          <div class="tp-steps tp-sv-barre" role="img" aria-label="Avancement des tâches de transport">
+            <span ng-repeat="t in data.d.transport.taches" ng-class="{fait: t.statut == 'fait', courant: t.statut == 'courant'}"></span>
+          </div>
+          <div class="tp-sv-legende"><span ng-repeat="t in data.d.transport.taches">{{t.nom}} · {{t.etat | lowercase}}</span></div>
+
+          <div class="tp-sv-equipe">
+            <span class="tp-tr-av" aria-hidden="true">{{(data.d.transport.agent || 'É').charAt(0)}}</span>
+            <span class="tp-sv-qui"><strong>{{data.d.transport.agent || 'Équipage à affecter'}}</strong><span class="tp-muted">{{data.d.transport.groupe}}</span></span>
+            <span class="tp-tag" ng-if="data.d.transport.vehicule" title="{{data.d.transport.vehicule.lieu}} · réservation {{data.d.transport.vehicule.statut | lowercase}}">{{data.d.transport.vehicule.nom}} · {{data.d.transport.vehicule.tag}}</span>
+            <a class="tp-btn tp-btn-ghost tp-sv-appel" ng-if="data.d.transport.telephone" href="tel:{{data.d.transport.telephone.replace(' ', '')}}">Appeler</a>
+          </div>
+
+          <ol class="tp-sv-taches">
+            <li ng-repeat="t in data.d.transport.taches" class="tp-sv-t" ng-class="{'tp-sv-cour': $index == data.d.transport.courante}">
+              <div class="tp-sv-t-tete">
+                <span class="tp-dot" ng-class="t.statut"></span>
+                <span class="tp-sv-t-nom"><strong>{{$index + 1}} · {{t.nom}}</strong> <span class="tp-muted">{{t.numero}}</span><br>
+                  <span class="tp-muted">{{t.lieu}}<span ng-if="t.prevu"> · prévu {{t.prevu}}</span><span ng-if="t.reel"> · réel {{t.reel}}</span></span></span>
+                <span class="tp-chip" ng-class="{'tp-ok': t.statut == 'fait', 'tp-u2': t.statut == 'courant', 'tp-ko': t.statut == 'annule', 'tp-u3': t.statut == 'futur'}">{{t.etat}}</span>
+              </div>
+              <div ng-if="$index == data.d.transport.courante">
+                <ol class="tp-sv-etapes">
+                  <li ng-repeat="e in t.etapes" ng-class="{fait: e.fait}"><span class="tp-sv-pt"></span><span>{{e.nom}}</span><span class="tp-muted">{{e.heure || '—'}}</span></li>
+                </ol>
+                <div class="tp-sv-kpi">
+                  <div><span class="tp-label">Prévu</span><strong>{{t.prevu || '—'}}</strong></div>
+                  <div><span class="tp-label">Démarrée</span><strong>{{t.demarre || '—'}}</strong></div>
+                  <div><span class="tp-label">Durée</span><strong><span ng-if="t.reelDebutMs">{{c.ecoule(t)}} / </span>{{t.dureeMin}} min</strong></div>
+                  <div ng-if="t.asset"><span class="tp-label">Asset</span><strong>{{t.asset}}</strong></div>
+                </div>
+              </div>
+              <div class="tp-sv-asset tp-muted" ng-if="$index != data.d.transport.courante && t.asset">Asset : {{t.asset}}</div>
+              <div class="tp-sv-asset" ng-if="$last && data.d.transport.equipements.length">
+                <span class="tp-muted">Réservés à l'arrivée :</span>
+                <span ng-repeat="e in data.d.transport.equipements" class="tp-tag" ng-class="{'tp-tag-off': !e.active}" title="Réservation {{e.statut | lowercase}}">{{e.nom}} · {{e.tag}}</span>
+              </div>
+              <blockquote class="tp-sv-note" ng-if="t.note && t.note.texte && ($index == data.d.transport.courante || t.statut == 'fait')">
+                <span class="tp-muted">Dernière note · {{t.note.heure}} · {{t.note.auteur}}</span><br>{{t.note.texte}}
+              </blockquote>
+            </li>
+          </ol>
+        </section>
+
+        <section class="tp-card tp-card-flat">
+          <h2 class="tp-h2">Demandeur</h2>
+          <div class="tp-dmd-nom">{{data.d.demandeur}}</div>
+          <a ng-if="data.d.telephone" href="tel:{{data.d.telephone.replace(' ', '')}}" class="tp-dmd-tel">{{data.d.telephone}}</a>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
